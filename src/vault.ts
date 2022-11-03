@@ -8,7 +8,7 @@ import {
   RoleRevoked,
   Transfer,
   Unpaused,
-  Withdraw
+  Withdraw,
 } from "../generated/Vault/Vault";
 import { _createOrUpdateProtocolEntity } from "./utils/protocol";
 

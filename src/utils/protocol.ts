@@ -1,7 +1,11 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 import { Protocol } from "../../generated/schema";
 
-export const _createOrUpdateProtocolEntity = (inPlayDelta: BigInt | null = null, tvlDelta: BigInt | null = null, isIncrease: boolean) => {
+export const _createOrUpdateProtocolEntity = (
+  inPlayDelta: BigInt | null = null,
+  tvlDelta: BigInt | null = null,
+  isIncrease: boolean,
+) => {
   let protocolEntity = Protocol.load("protocol");
   if (!protocolEntity) {
     protocolEntity = new Protocol("protocol");
@@ -31,10 +35,10 @@ export const _createOrUpdateProtocolEntity = (inPlayDelta: BigInt | null = null,
       // todo: calculate performance increase
     } else {
       // delta is a decrease
-      protocolEntity.tvl = protocolEntity.tvl.minus(tvlDelta)
+      protocolEntity.tvl = protocolEntity.tvl.minus(tvlDelta);
       // todo: calcaulate performance decrease
     }
   }
 
   protocolEntity.save();
-}
+};
