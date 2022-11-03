@@ -1,6 +1,6 @@
-type ExampleEntity @entity {
+type Protocol @entity {
   id: ID!
-  count: BigInt!
-  owner: Bytes! # address
-  spender: Bytes! # address
+  inPlay: BigInt!
+  tvl: BigInt!
+  performance: BigInt!
 }

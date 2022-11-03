@@ -1,4 +1,4 @@
-specVersion: 0.0.1
+specVersion: 0.0.4
 schema:
   file: ./schema.graphql
 dataSources:
@@ -10,7 +10,7 @@ dataSources:
       abi: Vault
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Approval
@@ -48,3 +48,31 @@ dataSources:
         - event: Withdraw(indexed address,uint256)
           handler: handleWithdraw
       file: ./src/vault.ts
+  - kind: ethereum
+    name: Market
+    network: goerli
+    source:
+      address: "0x520aC8dA92A35c54D54fFD9947793de10501f24d"
+      abi: Market
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Claimed
+        - MarketOwnershipTransferred
+        - Placed
+        - Settled
+      abis:
+        - name: Market
+          file: ./abis/Market.json
+      eventHandlers:
+        - event: Claimed(indexed address,uint256)
+          handler: handleClaimed
+        - event: MarketOwnershipTransferred(indexed address,indexed address)
+          handler: handleMarketOwnershipTransferred
+        - event: Placed(uint256,bytes32,bytes32,uint256,uint256,indexed address)
+          handler: handlePlaced
+        - event: Settled(uint256,uint256,bool,indexed address)
+          handler: handleSettled
+      file: ./src/market.ts
