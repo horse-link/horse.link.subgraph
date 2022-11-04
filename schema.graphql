@@ -1,6 +1,29 @@
+# type TotalInPlay @entity {
+#   id: ID!
+#   usdt: BigInt!
+#   dia: BigInt!
+# }
+#
+# type TotalValueLocked @entity {
+#   id: ID!
+#   usdt: BigInt!
+#   dia: BigInt!
+# }
+
 type Protocol @entity {
   id: ID!
-  inPlay: BigInt!
-  tvl: BigInt!
+  inPlay: BigInt! # TotalInPlay! @derived from: TotalInPlay
+  tvl: BigInt! # TotalValueLocked! @derived from: TotalValueLocked
   performance: BigInt!
+}
+
+type Bet @entity {
+  id: ID! # index param from event
+  propositionId: Bytes!
+  marketId: Bytes!
+  # todo: add token address when its added to event
+  amount: BigInt!
+  payout: BigInt!
+  owner: String!
+  closed: Boolean!
 }

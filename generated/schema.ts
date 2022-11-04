@@ -8,7 +8,7 @@ import {
   store,
   Bytes,
   BigInt,
-  BigDecimal
+  BigDecimal,
 } from "@graphprotocol/graph-ts";
 
 export class Protocol extends Entity {
@@ -23,7 +23,7 @@ export class Protocol extends Entity {
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Protocol must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Protocol must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
       store.set("Protocol", id.toString(), this);
     }
@@ -67,5 +67,91 @@ export class Protocol extends Entity {
 
   set performance(value: BigInt) {
     this.set("performance", Value.fromBigInt(value));
+  }
+}
+
+export class Bet extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Bet entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Bet must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("Bet", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Bet | null {
+    return changetype<Bet | null>(store.get("Bet", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get propositionId(): Bytes {
+    let value = this.get("propositionId");
+    return value!.toBytes();
+  }
+
+  set propositionId(value: Bytes) {
+    this.set("propositionId", Value.fromBytes(value));
+  }
+
+  get marketId(): Bytes {
+    let value = this.get("marketId");
+    return value!.toBytes();
+  }
+
+  set marketId(value: Bytes) {
+    this.set("marketId", Value.fromBytes(value));
+  }
+
+  get amount(): BigInt {
+    let value = this.get("amount");
+    return value!.toBigInt();
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
+  }
+
+  get payout(): BigInt {
+    let value = this.get("payout");
+    return value!.toBigInt();
+  }
+
+  set payout(value: BigInt) {
+    this.set("payout", Value.fromBigInt(value));
+  }
+
+  get owner(): string {
+    let value = this.get("owner");
+    return value!.toString();
+  }
+
+  set owner(value: string) {
+    this.set("owner", Value.fromString(value));
+  }
+
+  get closed(): boolean {
+    let value = this.get("closed");
+    return value!.toBoolean();
+  }
+
+  set closed(value: boolean) {
+    this.set("closed", Value.fromBoolean(value));
   }
 }

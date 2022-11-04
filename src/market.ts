@@ -1,10 +1,12 @@
+import { log } from "@graphprotocol/graph-ts";
 import {
   Claimed as ClaimedEvent,
   MarketOwnershipTransferred as MarketOwnershipTransferredEvent,
   Placed as PlacedEvent,
   Settled as SettledEvent,
 } from "../generated/Market/Market";
-import { _createOrUpdateProtocolEntity } from "./utils/protocol";
+import { closeBet, createBetEntity, fetchBetEntityOrNull } from "./utils/bet";
+import { createOrUpdateProtocolEntity } from "./utils/protocol";
 
 export function handleClaimed(event: ClaimedEvent): void {}
 
@@ -13,26 +15,46 @@ export function handleMarketOwnershipTransferred(
 ): void {}
 
 export function handlePlaced(event: PlacedEvent): void {
-  // todo: update the calculation of this delta to be USD value
-  const inPlayDelta = event.params.amount;
+  // create new bet entity and return it so we can reference its properties to update the protocol entity
+  const newBetEntity = createBetEntity(event);
+
+  // the amount in play can be fetched from the new entity
+  const inPlayDelta = newBetEntity.amount;
+
   // placed bets increase total in play
-  _createOrUpdateProtocolEntity(inPlayDelta, null, true);
+  createOrUpdateProtocolEntity(inPlayDelta, null, true);
 }
 
 export function handleSettled(event: SettledEvent): void {
-  // boolean for if the user won
-  const didWin = event.params.result;
-  // todo: update the calculation of this delta to be USD value
-  // if the user win on their bet
-  if (didWin) {
-    // decrease amount in play and tvl (?)
-    const tvlDelta = event.params.payout;
-    // todo: get bet entity and decrease inPlay by bet amount
-    _createOrUpdateProtocolEntity(null, tvlDelta, false);
+  // assign id to constant so its easier to reference, this corresponds to the original bet's index property
+  const id = event.params.id.toHexString();
+
+  // the bet is settled so it can be marked as closed
+  closeBet(id);
+
+  // get the original bet entity so its amount can be referenced
+  const referenceBetEntity = fetchBetEntityOrNull(id);
+
+  // if it does not exist exit with an error log
+  if (!referenceBetEntity) {
+    return log.error(`Could not find reference bet entity with id: ${id}`, []);
+  }
+
+  // if the user won
+  if (event.params.result) {
+    // decrease the total in play by the bet amount, and the tvl by the payout
+    createOrUpdateProtocolEntity(
+      referenceBetEntity.amount,
+      event.params.payout,
+      false,
+    );
+
+    // if the user didnt win
   } else {
-    // if the user didnt win - increase the tvl and decrease the amount in play
-    // todo: get bet entity and increase the tvl and decrease amount in play
-    _createOrUpdateProtocolEntity(null, null, true); // increase for tvl
-    _createOrUpdateProtocolEntity(null, null, false); // decrease amount in play
+    // decrease the total in play by the bet amount
+    createOrUpdateProtocolEntity(referenceBetEntity.amount, null, false);
+
+    // increase the tvl by the bet amount
+    createOrUpdateProtocolEntity(null, referenceBetEntity.amount, true);
   }
 }
