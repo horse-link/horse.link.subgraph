@@ -1,6 +1,38 @@
 type Protocol @entity {
+  # id should always be "protocol"
   id: ID!
+
+  # total amount of tokens in play
   inPlay: BigInt!
+
+  # total value locked
   tvl: BigInt!
-  performance: BigInt!
+
+  # performance percentage - i.e. 100 = 100%
+  performance: BigDecimal!
+}
+
+type Bet @entity {
+  # index param from placed event, id param from settled event
+  id: ID!
+
+  # id for the proposition (horse)
+  propositionId: Bytes!
+
+  # id for market for market (race)
+  marketId: Bytes!
+
+  # todo: add token address when its added to event
+
+  # amount of token wagered
+  amount: BigInt!
+
+  # amount of token as potential payout
+  payout: BigInt!
+
+  # address of the bet owner
+  owner: String!
+
+  # whether the bet is settled or not
+  settled: Boolean!
 }

@@ -1,6 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts"
 import {
-  Vault,
   Approval,
   Deposit,
   OwnershipTransferred,
@@ -10,13 +8,16 @@ import {
   RoleRevoked,
   Transfer,
   Unpaused,
-  Withdraw
-} from "../generated/Vault/Vault"
-import { Protocol } from "../generated/schema"
+  Withdraw,
+} from "../generated/Vault/Vault";
+import { createOrUpdateProtocolEntity } from "./utils/protocol";
 
 export function handleApproval(event: Approval): void {}
 
-export function handleDeposit(event: Deposit): void {}
+export function handleDeposit(event: Deposit): void {
+  // deposits increase the tvl in the protocol
+  createOrUpdateProtocolEntity(true, null, event.params.value);
+}
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
 
@@ -32,4 +33,7 @@ export function handleTransfer(event: Transfer): void {}
 
 export function handleUnpaused(event: Unpaused): void {}
 
-export function handleWithdraw(event: Withdraw): void {}
+export function handleWithdraw(event: Withdraw): void {
+  // withdraws decrease the tvl in the protocol
+  createOrUpdateProtocolEntity(false, null, event.params.value);
+}
