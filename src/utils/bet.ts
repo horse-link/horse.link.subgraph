@@ -24,7 +24,7 @@ export const createBetEntity = ({ params: bet }: PlacedEvent): Bet => {
   return entity;
 };
 
-export const fetchBetEntityOrNull = (id: string): Bet | void => {
+export const fetchBetEntityOrError = (id: string): Bet | void => {
   const entity = Bet.load(id);
 
   // exit and log an error if the entity could not be found
