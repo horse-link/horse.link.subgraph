@@ -16,7 +16,7 @@ export function handleApproval(event: Approval): void {}
 
 export function handleDeposit(event: Deposit): void {
   // deposits increase the tvl in the protocol
-  createOrUpdateProtocolEntity(null, event.params.value, true);
+  createOrUpdateProtocolEntity(true, null, event.params.value);
 }
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
@@ -35,5 +35,5 @@ export function handleUnpaused(event: Unpaused): void {}
 
 export function handleWithdraw(event: Withdraw): void {
   // withdraws decrease the tvl in the protocol
-  createOrUpdateProtocolEntity(null, event.params.value, false);
+  createOrUpdateProtocolEntity(false, null, event.params.value);
 }

@@ -22,7 +22,7 @@ export function handlePlaced(event: PlacedEvent): void {
   const inPlayDelta = newBetEntity.amount;
 
   // placed bets increase total in play
-  createOrUpdateProtocolEntity(inPlayDelta, null, true);
+  createOrUpdateProtocolEntity(true, inPlayDelta);
 }
 
 export function handleSettled(event: SettledEvent): void {
@@ -44,17 +44,17 @@ export function handleSettled(event: SettledEvent): void {
   if (event.params.result) {
     // decrease the total in play by the bet amount, and the tvl by the payout
     createOrUpdateProtocolEntity(
+      false,
       referenceBetEntity.amount,
       event.params.payout,
-      false,
     );
 
     // if the user didnt win
   } else {
     // decrease the total in play by the bet amount
-    createOrUpdateProtocolEntity(referenceBetEntity.amount, null, false);
+    createOrUpdateProtocolEntity(false, referenceBetEntity.amount);
 
     // increase the tvl by the bet amount
-    createOrUpdateProtocolEntity(null, referenceBetEntity.amount, true);
+    createOrUpdateProtocolEntity(true, null, referenceBetEntity.amount);
   }
 }

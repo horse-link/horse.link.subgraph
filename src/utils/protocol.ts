@@ -2,9 +2,9 @@ import { BigInt } from "@graphprotocol/graph-ts";
 import { Protocol } from "../../generated/schema";
 
 export const createOrUpdateProtocolEntity = (
+  isIncrease: boolean,
   inPlayDelta: BigInt | null = null,
   tvlDelta: BigInt | null = null,
-  isIncrease: boolean,
 ) => {
   // attempt to load the protocol entity
   let protocolEntity = Protocol.load("protocol");
