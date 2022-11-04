@@ -5,7 +5,7 @@ export const createOrUpdateProtocolEntity = (
   isIncrease: boolean,
   inPlayDelta: BigInt | null = null,
   tvlDelta: BigInt | null = null,
-) => {
+): void => {
   // attempt to load the protocol entity
   let protocolEntity = Protocol.load("protocol");
 

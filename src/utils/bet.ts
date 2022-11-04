@@ -2,7 +2,7 @@ import { log } from "@graphprotocol/graph-ts";
 import { Placed as PlacedEvent } from "../../generated/Market/Market";
 import { Bet } from "../../generated/schema";
 
-export const createBetEntity = ({ params: bet }: PlacedEvent) => {
+export const createBetEntity = ({ params: bet }: PlacedEvent): Bet => {
   // create the entity with the index param as the id - this will allow it to be fetched from a settled event by its id
   const entity = new Bet(bet.index.toString());
 
@@ -23,7 +23,7 @@ export const createBetEntity = ({ params: bet }: PlacedEvent) => {
   return entity;
 };
 
-export const fetchBetEntityOrNull = (id: string) => {
+export const fetchBetEntityOrNull = (id: string): Bet | void => {
   const entity = Bet.load(id);
 
   // exit and log an error if the entity could not be found
@@ -34,7 +34,7 @@ export const fetchBetEntityOrNull = (id: string) => {
   return entity;
 };
 
-export const closeBet = (id: string) => {
+export const closeBet = (id: string): void => {
   const entity = Bet.load(id);
 
   // exit and log an error if the entity could not be found
