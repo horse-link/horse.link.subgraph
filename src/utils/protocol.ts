@@ -1,10 +1,7 @@
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { Protocol } from "../../generated/schema";
 
-const _calculatePercentageDifference = (
-  vOneBigInt: BigInt,
-  vTwoBigInt: BigInt,
-): BigDecimal => {
+function _calculatePercentageDifference(vOneBigInt: BigInt, vTwoBigInt: BigInt): BigDecimal {
   const vOne = new BigDecimal(vOneBigInt);
   const vTwo = new BigDecimal(vTwoBigInt);
 
@@ -14,16 +11,12 @@ const _calculatePercentageDifference = (
   return numerator.div(denominator).times(BigDecimal.fromString("100"));
 };
 
-export const createOrUpdateProtocolEntity = (
-  isIncrease: boolean,
-  inPlayDelta: BigInt | null = null,
-  tvlDelta: BigInt | null = null,
-): void => {
+export function createOrUpdateProtocolEntity(isIncrease: boolean, inPlayDelta: BigInt | null = null, tvlDelta: BigInt | null = null): void {
   // attempt to load the protocol entity
   let protocolEntity = Protocol.load("protocol");
 
   // if it doesn't exist (i.e. the protocol has been interacted with for the first time) create it
-  if (!protocolEntity) {
+  if (protocolEntity == null) {
     protocolEntity = new Protocol("protocol");
 
     // initialize total in play and tvl as zero to start with
@@ -35,9 +28,9 @@ export const createOrUpdateProtocolEntity = (
   }
 
   // if an inPlayDelta is provided update the inPlay property
-  if (inPlayDelta) {
+  if (inPlayDelta !== null) {
     // if the delta is an increase
-    if (isIncrease) {
+    if (isIncrease == true) {
       protocolEntity.inPlay = protocolEntity.inPlay.plus(inPlayDelta);
 
       // delta is a decrease
@@ -47,9 +40,9 @@ export const createOrUpdateProtocolEntity = (
   }
 
   // if a tvlDelta is provided update the tvl property
-  if (tvlDelta) {
+  if (tvlDelta !== null) {
     // if the delta is an increase
-    if (isIncrease) {
+    if (isIncrease == true) {
       // store the new tvl
       const newTvl = protocolEntity.tvl.plus(tvlDelta);
 
