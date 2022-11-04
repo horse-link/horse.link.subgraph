@@ -4,10 +4,10 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ horse-link/hl-protocol-graph",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ horse-link/hl-protocol-goerli",
     "create-local": "graph create --node http://localhost:8020/ horse-link/hl-protocol-graph",
     "remove-local": "graph remove --node http://localhost:8020/ horse-link/hl-protocol-graph",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 horse-link/hl-protocol-graph"
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 horse-link/hl-protocol-goerli"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.35.0",

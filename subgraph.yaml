@@ -9,7 +9,6 @@ dataSources:
     name: Vault
     network: goerli
     source:
-      address: "0xA89AF0eAa0a60b00cd7123aCE2E73a4ebb593E50"
       abi: Vault
     mapping:
       kind: ethereum/events
@@ -48,7 +47,6 @@ dataSources:
     name: Market
     network: goerli
     source:
-      address: "0x520aC8dA92A35c54D54fFD9947793de10501f24d"
       abi: Market
     mapping:
       kind: ethereum/events
