@@ -60,13 +60,13 @@ export class Protocol extends Entity {
     this.set("tvl", Value.fromBigInt(value));
   }
 
-  get performance(): BigInt {
+  get performance(): BigDecimal {
     let value = this.get("performance");
-    return value!.toBigInt();
+    return value!.toBigDecimal();
   }
 
-  set performance(value: BigInt) {
-    this.set("performance", Value.fromBigInt(value));
+  set performance(value: BigDecimal) {
+    this.set("performance", Value.fromBigDecimal(value));
   }
 }
 
@@ -146,12 +146,12 @@ export class Bet extends Entity {
     this.set("owner", Value.fromString(value));
   }
 
-  get closed(): boolean {
-    let value = this.get("closed");
+  get settled(): boolean {
+    let value = this.get("settled");
     return value!.toBoolean();
   }
 
-  set closed(value: boolean) {
-    this.set("closed", Value.fromBoolean(value));
+  set settled(value: boolean) {
+    this.set("settled", Value.fromBoolean(value));
   }
 }

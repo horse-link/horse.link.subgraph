@@ -5,7 +5,7 @@ import {
   Placed as PlacedEvent,
   Settled as SettledEvent,
 } from "../generated/Market/Market";
-import { closeBet, createBetEntity, fetchBetEntityOrNull } from "./utils/bet";
+import { settleBet, createBetEntity, fetchBetEntityOrNull } from "./utils/bet";
 import { createOrUpdateProtocolEntity } from "./utils/protocol";
 
 export function handleClaimed(event: ClaimedEvent): void {}
@@ -29,8 +29,8 @@ export function handleSettled(event: SettledEvent): void {
   // assign id to constant so its easier to reference, this corresponds to the original bet's index property
   const id = event.params.id.toHexString();
 
-  // the bet is settled so it can be marked as closed
-  closeBet(id);
+  // the bet is settled so it can be marked as such
+  settleBet(id);
 
   // get the original bet entity so its amount can be referenced
   const referenceBetEntity = fetchBetEntityOrNull(id);

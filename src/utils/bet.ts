@@ -6,6 +6,7 @@ export const createBetEntity = ({ params: bet }: PlacedEvent): Bet => {
   // create the entity with the index param as the id - this will allow it to be fetched from a settled event by its id
   const entity = new Bet(bet.index.toString());
 
+  // assign bet params
   entity.propositionId = bet.propositionId;
   entity.marketId = bet.marketId;
   entity.amount = bet.amount;
@@ -14,8 +15,8 @@ export const createBetEntity = ({ params: bet }: PlacedEvent): Bet => {
   // toHexString is best for formatting addresses to strings
   entity.owner = bet.owner.toHexString();
 
-  // intialize bets as being unclosed as this function is called from handlePlaced
-  entity.closed = false;
+  // intialize bets as being unsettled as this function is called from handlePlaced
+  entity.settled = false;
 
   entity.save();
 
@@ -34,7 +35,7 @@ export const fetchBetEntityOrNull = (id: string): Bet | void => {
   return entity;
 };
 
-export const closeBet = (id: string): void => {
+export const settleBet = (id: string): void => {
   const entity = Bet.load(id);
 
   // exit and log an error if the entity could not be found
@@ -42,12 +43,12 @@ export const closeBet = (id: string): void => {
     return log.error(`Could not find bet with id: ${id}`, []);
   }
 
-  // exit and log a warning if the bet has already been closed
-  if (entity.closed) {
-    return log.warning(`Bet with id: ${id} has already been closed`, []);
+  // exit and log a warning if the bet has already been settled
+  if (entity.settled) {
+    return log.warning(`Bet with id: ${id} has already been settled`, []);
   }
 
-  entity.closed = true;
+  entity.settled = true;
 
   entity.save();
 };

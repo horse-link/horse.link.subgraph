@@ -1,29 +1,38 @@
-# type TotalInPlay @entity {
-#   id: ID!
-#   usdt: BigInt!
-#   dia: BigInt!
-# }
-#
-# type TotalValueLocked @entity {
-#   id: ID!
-#   usdt: BigInt!
-#   dia: BigInt!
-# }
-
 type Protocol @entity {
+  # id should always be "protocol"
   id: ID!
-  inPlay: BigInt! # TotalInPlay! @derived from: TotalInPlay
-  tvl: BigInt! # TotalValueLocked! @derived from: TotalValueLocked
-  performance: BigInt!
+
+  # total amount of tokens in play
+  inPlay: BigInt!
+
+  # total value locked
+  tvl: BigInt!
+
+  # performance percentage - i.e. 100 = 100%
+  performance: BigDecimal!
 }
 
 type Bet @entity {
-  id: ID! # index param from event
+  # index param from placed event, id param from settled event
+  id: ID!
+
+  # id for the proposition (horse)
   propositionId: Bytes!
+
+  # id for market for market (race)
   marketId: Bytes!
+
   # todo: add token address when its added to event
+
+  # amount of token wagered
   amount: BigInt!
+
+  # amount of token as potential payout
   payout: BigInt!
+
+  # address of the bet owner
   owner: String!
-  closed: Boolean!
+
+  # whether the bet is settled or not
+  settled: Boolean!
 }
