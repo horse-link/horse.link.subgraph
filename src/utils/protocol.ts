@@ -24,7 +24,7 @@ export function createOrUpdateProtocolEntity(isIncrease: boolean, inPlayDelta: B
     protocolEntity.tvl = BigInt.zero();
 
     // default to 100% performance
-    // protocolEntity.performance = BigDecimal.fromString("100");
+    protocolEntity.performance = BigDecimal.fromString("100");
   }
 
   // if an inPlayDelta is provided update the inPlay property
@@ -47,13 +47,13 @@ export function createOrUpdateProtocolEntity(isIncrease: boolean, inPlayDelta: B
       const newTvl = protocolEntity.tvl.plus(tvlDelta);
 
       // calculate the percentage difference between the old tvl and the new tvl and increase the protocol performance
-      // const performanceDifference = _calculatePercentageDifference(
-      //   BigInt.fromString(protocolEntity.performance.toString()),
-      //   newTvl,
-      // );
-      // protocolEntity.performance = protocolEntity.performance.plus(
-      //   performanceDifference,
-      // );
+      const performanceDifference = _calculatePercentageDifference(
+        protocolEntity.tvl,
+        newTvl,
+      );
+      protocolEntity.performance = protocolEntity.performance.plus(
+        performanceDifference,
+      );
 
       // set the protocol tvl to the new tvl
       protocolEntity.tvl = newTvl;
@@ -64,13 +64,14 @@ export function createOrUpdateProtocolEntity(isIncrease: boolean, inPlayDelta: B
       const newTvl = protocolEntity.tvl.minus(tvlDelta);
 
       // calculate the percentage difference between the old tvl and the new tvl and decrease the protocol performance
-      // const performanceDifference = _calculatePercentageDifference(
-      //   BigInt.fromString(protocolEntity.performance.toString()),
-      //   newTvl,
-      // );
-      // protocolEntity.performance = protocolEntity.performance.minus(
-      //   performanceDifference,
-      // );
+      const performanceDifference = _calculatePercentageDifference(
+        protocolEntity.tvl,
+        newTvl,
+      );
+      // performanceDifference will be negative so we still add it to the current performance to reduce it
+      protocolEntity.performance = protocolEntity.performance.plus(
+        performanceDifference,
+      );
 
       // set the protocol tvl to the new tvl
       protocolEntity.tvl = newTvl;

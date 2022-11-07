@@ -9,7 +9,7 @@ type Protocol @entity {
   tvl: BigInt!
 
   # performance percentage - i.e. 100 = 100%
-  # todo: add performance: BigDecimal!
+  performance: BigDecimal!
 }
 
 type Bet @entity {
