@@ -5,8 +5,9 @@ schema:
   file: ./schema.graphql
 
 dataSources:
+  # VAULTS
   - kind: ethereum/contract
-    name: Vault
+    name: HL Mock DIA Vault
     network: goerli
     source:
       address: "0xA89AF0eAa0a60b00cd7123aCE2E73a4ebb593E50"
@@ -44,6 +45,85 @@ dataSources:
           handler: handleWithdraw
       file: ./src/vault.ts
 
+  - kind: ethereum/contract
+    name: Mock DIA Vault
+    network: goerli
+    source:
+      address: "0x6F47f0864ab7a02f9E7866d2bc8aC0BCf3C4924E"
+      abi: Vault
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Protocol
+        - Bet
+      abis:
+        - name: Vault
+          file: ./abis/Vault.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+        - event: Deposit(indexed address,uint256)
+          handler: handleDeposit
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Paused(address)
+          handler: handlePaused
+        - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
+          handler: handleRoleAdminChanged
+        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleGranted
+        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleRevoked
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Unpaused(address)
+          handler: handleUnpaused
+        - event: Withdraw(indexed address,uint256)
+          handler: handleWithdraw
+      file: ./src/vault.ts
+
+  - kind: ethereum/contract
+    name: Mock USDT Vault
+    network: goerli
+    source:
+      address: "0x21D068720BDBc7EdC49Ce8D1b1E1fb2d6c3526eb"
+      abi: Vault
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Protocol
+        - Bet
+      abis:
+        - name: Vault
+          file: ./abis/Vault.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+        - event: Deposit(indexed address,uint256)
+          handler: handleDeposit
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Paused(address)
+          handler: handlePaused
+        - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
+          handler: handleRoleAdminChanged
+        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleGranted
+        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleRevoked
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Unpaused(address)
+          handler: handleUnpaused
+        - event: Withdraw(indexed address,uint256)
+          handler: handleWithdraw
+      file: ./src/vault.ts
+
+  # MARKETS
   - kind: ethereum/contract
     name: Market
     network: goerli

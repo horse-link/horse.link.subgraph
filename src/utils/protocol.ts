@@ -48,7 +48,7 @@ export function createOrUpdateProtocolEntity(isIncrease: boolean, inPlayDelta: B
 
       // calculate the percentage difference between the old tvl and the new tvl and increase the protocol performance
       const performanceDifference = _calculatePercentageDifference(
-        BigInt.fromString(protocolEntity.performance.toString()),
+        protocolEntity.tvl,
         newTvl,
       );
       protocolEntity.performance = protocolEntity.performance.plus(
@@ -65,10 +65,11 @@ export function createOrUpdateProtocolEntity(isIncrease: boolean, inPlayDelta: B
 
       // calculate the percentage difference between the old tvl and the new tvl and decrease the protocol performance
       const performanceDifference = _calculatePercentageDifference(
-        BigInt.fromString(protocolEntity.performance.toString()),
+        protocolEntity.tvl,
         newTvl,
       );
-      protocolEntity.performance = protocolEntity.performance.minus(
+      // performanceDifference will be negative so we still add it to the current performance to reduce it
+      protocolEntity.performance = protocolEntity.performance.plus(
         performanceDifference,
       );
 
