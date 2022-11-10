@@ -1,5 +1,6 @@
 import { Address } from "@graphprotocol/graph-ts";
 
+// addresses taken from horse.link readme
 export const MARKET_ADDRESSES = [
   // usdc market address
   "0xAbA5571aF0cC8Ea36bB4553D6C4B935B0F53E91e".toLowerCase(),
