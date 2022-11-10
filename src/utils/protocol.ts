@@ -8,7 +8,14 @@ function _calculatePercentageDifference(vOneBigInt: BigInt, vTwoBigInt: BigInt):
   const numerator = vOne.minus(vTwo);
   const denominator = vOne.plus(vTwo).div(BigDecimal.fromString("2"));
 
-  return numerator.div(denominator).times(BigDecimal.fromString("100"));
+  const ret = numerator.div(denominator).times(BigDecimal.fromString("100"));
+
+  // there is no absolute value method on BigDecimal so its simulated here
+  if (ret.lt(BigDecimal.zero())) {
+    return ret.times(BigDecimal.fromString("-1"));
+  } else {
+    return ret;
+  }
 };
 
 export function createOrUpdateProtocolEntity(isIncrease: boolean, inPlayDelta: BigInt | null = null, tvlDelta: BigInt | null = null): void {
@@ -68,8 +75,7 @@ export function createOrUpdateProtocolEntity(isIncrease: boolean, inPlayDelta: B
         protocolEntity.tvl,
         newTvl,
       );
-      // performanceDifference will be negative so we still add it to the current performance to reduce it
-      protocolEntity.performance = protocolEntity.performance.plus(
+      protocolEntity.performance = protocolEntity.performance.minus(
         performanceDifference,
       );
 
