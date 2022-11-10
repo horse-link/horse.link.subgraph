@@ -55,11 +55,7 @@ export function handleSettled(event: Settled): void {
   // if the user won
   if (event.params.result) {
     // decrease the total in play by the bet amount, and the tvl by the payout
-    createOrUpdateProtocolEntity(
-      false,
-      referenceBetEntity.amount,
-      event.params.payout,
-    );
+    createOrUpdateProtocolEntity(false, referenceBetEntity.amount, event.params.payout);
 
     // if the user didnt win
   } else {
