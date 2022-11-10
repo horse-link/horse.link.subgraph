@@ -36,3 +36,23 @@ type Bet @entity {
   # whether the bet is settled or not
   settled: Boolean!
 }
+
+type VaultTransaction @entity {
+  # tx hash
+  id: ID!
+
+  # either deposit or withdraw
+  type: String!
+
+  # address of vault
+  vaultAddress: String!
+
+  # address of depositer
+  depositerAddress: String!
+
+  # amount of token
+  amount: BigInt!
+
+  # timestamp of transaction
+  timestamp: BigInt!
+}

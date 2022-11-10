@@ -11,7 +11,7 @@ function _calculatePercentageDifference(vOneBigInt: BigInt, vTwoBigInt: BigInt):
   const ret = numerator.div(denominator).times(BigDecimal.fromString("100"));
 
   // there is no absolute value method on BigDecimal so its simulated here
-  if (ret.lt(BigDecimal.zero())) {
+  if (ret.lt(BigDecimal.zero()) == true) {
     return ret.times(BigDecimal.fromString("-1"));
   } else {
     return ret;
