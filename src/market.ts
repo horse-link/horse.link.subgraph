@@ -6,15 +6,13 @@ import {
 } from "../generated/Market/Market";
 import { isHorseLinkMarket } from "./addresses";
 import { settleBet, createBetEntity, fetchBetEntityOrNull } from "./utils/bet";
-import { getSource } from "./utils/general";
 import { createOrUpdateProtocolEntity } from "./utils/protocol";
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
 
 export function handlePlaced(event: Placed): void {
   // check if event comes from horse link market, if not do nothing
-  const txSource = getSource(event.address);
-  if (isHorseLinkMarket(txSource) == false) {
+  if (isHorseLinkMarket(event.address) == false) {
     log.warning("Not a horse link market", []);
     return;
   }
@@ -31,8 +29,7 @@ export function handlePlaced(event: Placed): void {
 
 export function handleSettled(event: Settled): void {
   // check if event comes from horse link market, if not do nothing
-  const txSource = getSource(event.address);
-  if (isHorseLinkMarket(txSource) == false) {
+  if (isHorseLinkMarket(event.address) == false) {
     log.warning("Not a horse link market", []);
     return;
   }

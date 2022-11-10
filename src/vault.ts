@@ -12,7 +12,6 @@ import {
   Withdraw,
 } from "../generated/Vault/Vault";
 import { isHorseLinkVault } from "./addresses";
-import { getSource } from "./utils/general";
 import { createOrUpdateProtocolEntity } from "./utils/protocol";
 import { createDeposit, createWithdrawal } from "./utils/vault-transaction";
 
@@ -20,15 +19,14 @@ export function handleApproval(event: Approval): void {}
 
 export function handleDeposit(event: Deposit): void {
   // check if the event comes from a horse link vault, if not do nothing
-  const txSource = getSource(event.address);
-  if (isHorseLinkVault(txSource) == false) {
+  if (isHorseLinkVault(event.address) == false) {
     log.warning("Not a horse link vault", []);
     return;
   }
 
   // deposits increase the tvl in the protocol
   createOrUpdateProtocolEntity(true, null, event.params.value);
-  createDeposit(event.params, event.transaction, event.block.timestamp);
+  createDeposit(event.params, event.transaction, event.block.timestamp, event.address);
 }
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
@@ -47,13 +45,12 @@ export function handleUnpaused(event: Unpaused): void {}
 
 export function handleWithdraw(event: Withdraw): void {
   // check if the event comes from a horse link vault, if not do nothing
-  const txSource = getSource(event.address);
-  if (isHorseLinkVault(txSource) == false) {
+  if (isHorseLinkVault(event.address) == false) {
     log.warning("Not a horse link vault", []);
     return;
   }
 
   // withdraws decrease the tvl in the protocol
   createOrUpdateProtocolEntity(false, null, event.params.value);
-  createWithdrawal(event.params, event.transaction, event.block.timestamp);
+  createWithdrawal(event.params, event.transaction, event.block.timestamp, event.address);
 }
