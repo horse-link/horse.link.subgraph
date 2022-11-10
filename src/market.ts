@@ -1,16 +1,13 @@
 import { log } from "@graphprotocol/graph-ts";
 import {
-  Claimed,
-  MarketOwnershipTransferred,
+  OwnershipTransferred,
   Placed,
   Settled,
 } from "../generated/Market/Market";
 import { settleBet, createBetEntity, fetchBetEntityOrNull } from "./utils/bet";
 import { createOrUpdateProtocolEntity } from "./utils/protocol";
 
-export function handleClaimed(event: Claimed): void {}
-
-export function handleMarketOwnershipTransferred(event: MarketOwnershipTransferred): void {}
+export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
 
 export function handlePlaced(event: Placed): void {
   // create new bet entity and return it so we can reference its properties to update the protocol entity
