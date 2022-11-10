@@ -20,7 +20,7 @@ export function handleApproval(event: Approval): void {}
 export function handleDeposit(event: Deposit): void {
   // check if the event comes from a horse link vault, if not do nothing
   if (isHorseLinkVault(event.address) == false) {
-    log.warning("Not a horse link vault", []);
+    log.info(`${event.address} is not a horse link vault`, []);
     return;
   }
 
@@ -46,7 +46,7 @@ export function handleUnpaused(event: Unpaused): void {}
 export function handleWithdraw(event: Withdraw): void {
   // check if the event comes from a horse link vault, if not do nothing
   if (isHorseLinkVault(event.address) == false) {
-    log.warning("Not a horse link vault", []);
+    log.info(`${event.address} is not a horse link vault`, []);
     return;
   }
 

@@ -13,7 +13,7 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
 export function handlePlaced(event: Placed): void {
   // check if event comes from horse link market, if not do nothing
   if (isHorseLinkMarket(event.address) == false) {
-    log.warning("Not a horse link market", []);
+    log.info(`${event.address} is not a horse link market`, []);
     return;
   }
 
@@ -30,7 +30,7 @@ export function handlePlaced(event: Placed): void {
 export function handleSettled(event: Settled): void {
   // check if event comes from horse link market, if not do nothing
   if (isHorseLinkMarket(event.address) == false) {
-    log.warning("Not a horse link market", []);
+    log.info(`${event.address} is not a horse link market`, []);
     return;
   }
 
