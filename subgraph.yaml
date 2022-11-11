@@ -18,7 +18,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Protocol
-        - Bet
+        - VaultTransaction
       abis:
         - name: Vault
           file: ./abis/Vault.json
