@@ -17,14 +17,14 @@ export function handlePlaced(event: Placed): void {
     return;
   }
 
-  // create new bet entity and return it so we can reference its properties to update the protocol entity
+  // create new bet entity and return it so its properties can be referenced when updating the protocol entity
   const newBetEntity = createBetEntity(event.params);
 
-  // the amount in play can be fetched from the new entity
-  const inPlayDelta = newBetEntity.amount;
+  // exposure is calculated by the payout minus the bet amount
+  const exposure = newBetEntity.payout.minus(newBetEntity.amount);
 
-  // placed bets increase total in play
-  createOrUpdateProtocolEntity(true, inPlayDelta, null);
+  // placed bets increase total in play by the bet amount which can come from the new entity, exposure increases tvl
+  createOrUpdateProtocolEntity(true, newBetEntity.amount, exposure);
 }
 
 export function handleSettled(event: Settled): void {
@@ -49,17 +49,9 @@ export function handleSettled(event: Settled): void {
     return;
   }
 
-  // if the user won
-  if (event.params.result) {
-    // decrease the total in play by the bet amount, and the tvl by the payout
-    createOrUpdateProtocolEntity(false, referenceBetEntity.amount, event.params.payout);
+  // exposure is calculated by payout minus original bet amount
+  const exposure = event.params.payout.minus(referenceBetEntity.amount);
 
-  // if the user didnt win
-  } else {
-    // decrease the total in play by the bet amount
-    createOrUpdateProtocolEntity(false, referenceBetEntity.amount, null);
-
-    // increase the tvl by the bet amount
-    createOrUpdateProtocolEntity(true, null, referenceBetEntity.amount);
-  }
+  // decrease total in play by the bet amount, and tvl by exposure
+  createOrUpdateProtocolEntity(false, referenceBetEntity.amount, exposure);
 }
