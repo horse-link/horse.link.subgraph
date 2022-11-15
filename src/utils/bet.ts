@@ -13,10 +13,10 @@ export function createBetEntity(params: Placed__Params, timestamp: BigInt, marke
   entity.payout = params.payout;
 
   // toHexString is best for formatting addresses to strings
-  entity.owner = params.owner.toHexString();
+  entity.owner = params.owner.toHexString().toLowerCase();
 
   // store the market address
-  entity.marketAddress = marketAddress.toHexString();
+  entity.marketAddress = marketAddress.toHexString().toLowerCase();
 
   // intialize bets as being unsettled as this function is called from handlePlaced
   entity.settled = false;

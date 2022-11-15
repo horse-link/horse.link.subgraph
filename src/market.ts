@@ -35,7 +35,7 @@ export function handleSettled(event: Settled): void {
   }
 
   // assign id to constant so its easier to reference, this corresponds to the original bet's index property
-  const id = event.params.id.toHexString();
+  const id = event.params.id.toHexString().toLowerCase();
 
   // the bet is settled so it can be marked as such
   settleBet(id, event.block.timestamp);
