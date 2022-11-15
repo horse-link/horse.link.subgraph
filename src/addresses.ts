@@ -1,5 +1,3 @@
-import { Address } from "@graphprotocol/graph-ts";
-
 function _makeLowerCase(value: string, index: i32, self: Array<string>): string {
   return value.toLowerCase();
 }
@@ -21,10 +19,10 @@ export const VAULT_ADDRESSES = [
   "0x7e8Aa9bC57CA64Bf3F91fcE3B0A5F740239F8f59"
 ];
 
-export function isHorseLinkMarket(address: Address): bool {
-  return MARKET_ADDRESSES.map<string>(_makeLowerCase).includes(address.toHexString().toLowerCase());
+export function isHorseLinkMarket(address: string): bool {
+  return MARKET_ADDRESSES.map<string>(_makeLowerCase).includes(address.toLowerCase());
 }
 
-export function isHorseLinkVault(address: Address): bool {
-  return VAULT_ADDRESSES.map<string>(_makeLowerCase).includes(address.toHexString().toLowerCase());
+export function isHorseLinkVault(address: string): bool {
+  return VAULT_ADDRESSES.map<string>(_makeLowerCase).includes(address.toLowerCase());
 }
