@@ -1,4 +1,4 @@
-import { log } from "@graphprotocol/graph-ts";
+import { BigInt, log } from "@graphprotocol/graph-ts";
 import {
   OwnershipTransferred,
   Placed,
@@ -49,9 +49,20 @@ export function handleSettled(event: Settled): void {
     return;
   }
 
-  // exposure is calculated by payout minus original bet amount
-  const exposure = event.params.payout.minus(referenceBetEntity.amount);
+  // tvl delta will be calculated based on a win or a loss
+  let tvlDelta = BigInt.zero();
+
+  // if the user won
+  if (event.params.result == true) {
+    // tvl will change by the exposure
+    tvlDelta = event.params.payout.minus(referenceBetEntity.amount);
+
+  // if the user lost
+  } else {
+    // tvl will change by the bet amount
+    tvlDelta = referenceBetEntity.amount;
+  }
 
   // decrease total in play by the bet amount, and tvl by exposure
-  createOrUpdateProtocolEntity(event.block.timestamp, false, referenceBetEntity.amount, exposure);
+  createOrUpdateProtocolEntity(event.block.timestamp, false, referenceBetEntity.amount, tvlDelta);
 }
