@@ -35,17 +35,6 @@ export function createBetEntity(params: Placed__Params, timestamp: BigInt, marke
   return entity;
 };
 
-export function fetchBetEntityOrNull(id: string): Bet | null {
-  const entity = Bet.load(id);
-
-  // log an error if the entity could not be found
-  if (entity == null) {
-    log.warning(`Could not fetch bet with id: ${id}`, []);
-  }
-
-  return entity;
-};
-
 export function settleBet(id: string, timestamp: BigInt, hash: Bytes): void {
   const entity = Bet.load(id);
 

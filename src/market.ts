@@ -1,11 +1,12 @@
-import { BigInt, log } from "@graphprotocol/graph-ts";
+import { log } from "@graphprotocol/graph-ts";
 import {
   OwnershipTransferred,
   Placed,
   Settled,
 } from "../generated/Market/Market";
+import { Bet } from "../generated/schema";
 import { isHorseLinkMarket } from "./addresses";
-import { settleBet, createBetEntity, fetchBetEntityOrNull } from "./utils/bet";
+import { settleBet, createBetEntity } from "./utils/bet";
 import { createOrUpdateProtocolEntity } from "./utils/protocol";
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
@@ -41,7 +42,7 @@ export function handleSettled(event: Settled): void {
   settleBet(id, event.block.timestamp, event.transaction.hash);
 
   // get the original bet entity so its amount can be referenced
-  const referenceBetEntity = fetchBetEntityOrNull(id);
+  const referenceBetEntity = Bet.load(id);
 
   // if it does not exist exit with an error log
   if (referenceBetEntity == null) {
