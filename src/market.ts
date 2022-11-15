@@ -49,20 +49,15 @@ export function handleSettled(event: Settled): void {
     return;
   }
 
-  // tvl delta is either exposure, or the original bet amount, depending on a win or a loss
-  let tvlDelta = BigInt.zero();
-
   // if the user wins
   if (event.params.result == true) {
-    // tvlDelta is exposure
-    tvlDelta = referenceBetEntity.amount.minus(referenceBetEntity.amount);
-
-  // if the user didnt win
-  } else {
-    // delta is the original amount
-    tvlDelta = referenceBetEntity.amount;
+    // tvl is decreased by exposure, and in play is decreased by amount
+    const exposure = referenceBetEntity.amount.minus(referenceBetEntity.amount);
+    createOrUpdateProtocolEntity(event.block.timestamp, false, referenceBetEntity.amount, exposure);
+    return;
   }
 
-  // decrease total in play by the bet amount, and tvl by exposure
-  createOrUpdateProtocolEntity(event.block.timestamp, false, referenceBetEntity.amount, tvlDelta);
+  // if the user lost, in play is *decreased*, and tvl is *increased* by original amount
+  createOrUpdateProtocolEntity(event.block.timestamp, false, referenceBetEntity.amount, null);
+  createOrUpdateProtocolEntity(event.block.timestamp, true, null, referenceBetEntity.amount);
 }
