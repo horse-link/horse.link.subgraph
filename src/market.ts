@@ -1,4 +1,4 @@
-import { log } from "@graphprotocol/graph-ts";
+import { BigInt, log } from "@graphprotocol/graph-ts";
 import {
   OwnershipTransferred,
   Placed,
@@ -35,7 +35,7 @@ export function handleSettled(event: Settled): void {
   }
 
   // assign id to constant so its easier to reference, this corresponds to the original bet's index property
-  const id = event.params.id.toHexString().toLowerCase();
+  const id = event.params.id.toString().toLowerCase();
 
   // the bet is settled so it can be marked as such
   settleBet(id, event.block.timestamp, event.transaction.hash);
@@ -49,9 +49,20 @@ export function handleSettled(event: Settled): void {
     return;
   }
 
-  // exposure is calculated by payout minus original bet amount
-  const exposure = event.params.payout.minus(referenceBetEntity.amount);
+  // tvl delta is either exposure, or the original bet amount, depending on a win or a loss
+  let tvlDelta = BigInt.zero();
+
+  // if the user wins
+  if (event.params.result == true) {
+    // tvlDelta is exposure
+    tvlDelta = referenceBetEntity.amount.minus(referenceBetEntity.amount);
+
+  // if the user didnt win
+  } else {
+    // delta is the original amount
+    tvlDelta = referenceBetEntity.amount;
+  }
 
   // decrease total in play by the bet amount, and tvl by exposure
-  createOrUpdateProtocolEntity(event.block.timestamp, false, referenceBetEntity.amount, exposure);
+  createOrUpdateProtocolEntity(event.block.timestamp, false, referenceBetEntity.amount, tvlDelta);
 }
