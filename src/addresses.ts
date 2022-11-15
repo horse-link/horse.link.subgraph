@@ -11,7 +11,7 @@ export const MARKET_ADDRESSES = [
 
   // dia market address
   "0xA0f8A6eD9Df461541159Fa5f083082A6f6E0f795"
-].map<string>(_makeLowerCase);
+];
 
 export const VAULT_ADDRESSES = [
   // usdc vault
@@ -19,12 +19,12 @@ export const VAULT_ADDRESSES = [
 
   // dia vault
   "0x7e8Aa9bC57CA64Bf3F91fcE3B0A5F740239F8f59"
-].map<string>(_makeLowerCase);
+];
 
 export function isHorseLinkMarket(address: Address): bool {
-  return MARKET_ADDRESSES.includes(address.toHexString().toLowerCase());
+  return MARKET_ADDRESSES.map<string>(_makeLowerCase).includes(address.toHexString().toLowerCase());
 }
 
 export function isHorseLinkVault(address: Address): bool {
-  return VAULT_ADDRESSES.includes(address.toHexString().toLowerCase());
+  return VAULT_ADDRESSES.map<string>(_makeLowerCase).includes(address.toHexString().toLowerCase());
 }

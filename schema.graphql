@@ -10,6 +10,9 @@ type Protocol @entity {
 
   # performance percentage - i.e. 100 = 100%
   performance: BigDecimal!
+
+  # timestamp for when the protocol stats was last updated
+  lastUpdate: BigInt!
 }
 
 type Bet @entity {
@@ -21,6 +24,9 @@ type Bet @entity {
 
   # id for market for market (race)
   marketId: Bytes!
+
+  # address for market contract
+  marketAddress: String!
 
   # todo: add token address when its added to event
 
@@ -35,6 +41,12 @@ type Bet @entity {
 
   # whether the bet is settled or not
   settled: Boolean!
+
+  # timestamp when bet is placed
+  createdAt: BigInt!
+
+  # timestamp when bet is settled
+  settledAt: BigInt!
 }
 
 type VaultTransaction @entity {

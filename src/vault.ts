@@ -25,7 +25,7 @@ export function handleDeposit(event: Deposit): void {
   }
 
   // deposits increase the tvl in the protocol
-  createOrUpdateProtocolEntity(true, null, event.params.value);
+  createOrUpdateProtocolEntity(event.block.timestamp, true, null, event.params.value);
   createDeposit(event.params, event.transaction, event.block.timestamp, event.address);
 }
 
@@ -51,6 +51,6 @@ export function handleWithdraw(event: Withdraw): void {
   }
 
   // withdraws decrease the tvl in the protocol
-  createOrUpdateProtocolEntity(false, null, event.params.value);
+  createOrUpdateProtocolEntity(event.block.timestamp, false, null, event.params.value);
   createWithdrawal(event.params, event.transaction, event.block.timestamp, event.address);
 }
