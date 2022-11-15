@@ -12,14 +12,15 @@ import { createOrUpdateProtocolEntity } from "./utils/protocol";
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
 
 export function handlePlaced(event: Placed): void {
+  const address = event.address.toHexString();
   // check if event comes from horse link market, if not do nothing
-  if (isHorseLinkMarket(event.address) == false) {
-    log.info(`${event.address} is not a horse link market`, []);
+  if (isHorseLinkMarket(address) == false) {
+    log.info(`${address} is not a horse link market`, []);
     return;
   }
 
   // create new bet entity and return it so its properties can be referenced when updating the protocol entity
-  const newBetEntity = createBetEntity(event.params, event.block.timestamp, event.address, event.transaction.hash);
+  const newBetEntity = createBetEntity(event.params, event.block.timestamp, address, event.transaction.hash);
 
   // exposure is calculated by the payout minus the bet amount
   const exposure = newBetEntity.payout.minus(newBetEntity.amount);
@@ -29,9 +30,10 @@ export function handlePlaced(event: Placed): void {
 }
 
 export function handleSettled(event: Settled): void {
+  const address = event.address.toHexString();
   // check if event comes from horse link market, if not do nothing
-  if (isHorseLinkMarket(event.address) == false) {
-    log.info(`${event.address} is not a horse link market`, []);
+  if (isHorseLinkMarket(address) == false) {
+    log.info(`${address} is not a horse link market`, []);
     return;
   }
 

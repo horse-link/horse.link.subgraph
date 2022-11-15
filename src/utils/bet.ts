@@ -2,7 +2,7 @@ import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 import { Placed__Params } from "../../generated/Market/Market";
 import { Bet } from "../../generated/schema";
 
-export function createBetEntity(params: Placed__Params, timestamp: BigInt, marketAddress: Address, hash: Bytes): Bet {
+export function createBetEntity(params: Placed__Params, timestamp: BigInt, marketAddress: string, hash: Bytes): Bet {
   // create the entity with the index param as the id - this will allow it to be fetched from a settled event by its id
   const entity = new Bet(params.index.toString());
 
@@ -16,7 +16,7 @@ export function createBetEntity(params: Placed__Params, timestamp: BigInt, marke
   entity.owner = params.owner.toHexString().toLowerCase();
 
   // store the market address
-  entity.marketAddress = marketAddress.toHexString().toLowerCase();
+  entity.marketAddress = marketAddress.toLowerCase();
 
   // intialize bets as being unsettled as this function is called from handlePlaced
   entity.settled = false;
