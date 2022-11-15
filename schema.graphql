@@ -47,6 +47,12 @@ type Bet @entity {
 
   # timestamp when bet is settled
   settledAt: BigInt!
+
+  # tx for createdAt
+  createdAtTx: String!
+
+  # tx for settledAt
+  settledAtTx: String!
 }
 
 type VaultTransaction @entity {

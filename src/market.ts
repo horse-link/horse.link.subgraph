@@ -18,7 +18,7 @@ export function handlePlaced(event: Placed): void {
   }
 
   // create new bet entity and return it so its properties can be referenced when updating the protocol entity
-  const newBetEntity = createBetEntity(event.params, event.block.timestamp, event.address);
+  const newBetEntity = createBetEntity(event.params, event.block.timestamp, event.address, event.transaction.hash);
 
   // exposure is calculated by the payout minus the bet amount
   const exposure = newBetEntity.payout.minus(newBetEntity.amount);
@@ -38,7 +38,7 @@ export function handleSettled(event: Settled): void {
   const id = event.params.id.toHexString().toLowerCase();
 
   // the bet is settled so it can be marked as such
-  settleBet(id, event.block.timestamp);
+  settleBet(id, event.block.timestamp, event.transaction.hash);
 
   // get the original bet entity so its amount can be referenced
   const referenceBetEntity = fetchBetEntityOrNull(id);

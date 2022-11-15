@@ -1,8 +1,8 @@
-import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 import { Placed__Params } from "../../generated/Market/Market";
 import { Bet } from "../../generated/schema";
 
-export function createBetEntity(params: Placed__Params, timestamp: BigInt, marketAddress: Address): Bet {
+export function createBetEntity(params: Placed__Params, timestamp: BigInt, marketAddress: Address, hash: Bytes): Bet {
   // create the entity with the index param as the id - this will allow it to be fetched from a settled event by its id
   const entity = new Bet(params.index.toString());
 
@@ -21,11 +21,13 @@ export function createBetEntity(params: Placed__Params, timestamp: BigInt, marke
   // intialize bets as being unsettled as this function is called from handlePlaced
   entity.settled = false;
 
-  // store the timestamp for when the bet is created
+  // store the timestamp for when the bet is created, and the hash for the tx
   entity.createdAt = timestamp;
+  entity.createdAtTx = hash.toHexString().toLowerCase();
 
-  // set default value for settledAt
+  // set default value for settledAt and settledAtTx
   entity.settledAt = BigInt.zero();
+  entity.settledAtTx = Address.zero().toHexString().toLowerCase();
 
   entity.save();
 
@@ -44,7 +46,7 @@ export function fetchBetEntityOrNull(id: string): Bet | null {
   return entity;
 };
 
-export function settleBet(id: string, timestamp: BigInt): void {
+export function settleBet(id: string, timestamp: BigInt, hash: Bytes): void {
   const entity = Bet.load(id);
 
   // exit and log an error if the entity could not be found
@@ -59,9 +61,10 @@ export function settleBet(id: string, timestamp: BigInt): void {
     return;
   }
 
-  // settle bet and store timestamp when its settled
+  // settle bet and store timestamp when its settled as well as tx hash
   entity.settled = true;
   entity.settledAt = timestamp;
+  entity.settledAtTx = hash.toHexString().toLowerCase();
 
   entity.save();
 };
