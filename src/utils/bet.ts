@@ -24,6 +24,9 @@ export function createBetEntity(params: Placed__Params, timestamp: BigInt, marke
   // store the timestamp for when the bet is created
   entity.createdAt = timestamp;
 
+  // set default value for settledAt
+  entity.settledAt = BigInt.zero();
+
   entity.save();
 
   // return newly created entity
