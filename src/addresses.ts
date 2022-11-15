@@ -1,5 +1,3 @@
-import { Address } from "@graphprotocol/graph-ts";
-
 function _makeLowerCase(value: string, index: i32, self: Array<string>): string {
   return value.toLowerCase();
 }

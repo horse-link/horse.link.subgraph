@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { BigInt, ethereum } from "@graphprotocol/graph-ts";
 import { VaultTransaction } from "../../generated/schema";
 import { Deposit__Params, Withdraw__Params } from "../../generated/Vault/Vault";
 
