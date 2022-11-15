@@ -7,15 +7,15 @@ export function createDeposit(params: Deposit__Params, tx: ethereum.Transaction,
   const type = "deposit";
 
   // entity id will be its transaction hash
-  const entity = new VaultTransaction(tx.hash.toHexString());
+  const entity = new VaultTransaction(tx.hash.toHexString().toLowerCase());
 
   // populate entity fields
   entity.type = type;
   entity.amount = params.value;
-  entity.depositerAddress = params.who.toHexString();
+  entity.depositerAddress = params.who.toHexString().toLowerCase();
 
   // the vaultAddress will be the zero address if a tx.to is not provided
-  entity.vaultAddress = eventAddress.toHexString();
+  entity.vaultAddress = eventAddress.toHexString().toLowerCase();
 
   entity.timestamp = timestamp;
 
@@ -27,15 +27,15 @@ export function createWithdrawal(params: Withdraw__Params, tx: ethereum.Transact
   const type = "withdraw";
 
   // entity id will be its transaction hash
-  const entity = new VaultTransaction(tx.hash.toHexString());
+  const entity = new VaultTransaction(tx.hash.toHexString().toLowerCase());
 
   // populate entity fields
   entity.type = type;
   entity.amount = params.value;
-  entity.depositerAddress = params.who.toHexString();
+  entity.depositerAddress = params.who.toHexString().toLowerCase();
 
   // the vaultAddress will be the zero address if a tx.to is not provided
-  entity.vaultAddress = eventAddress.toHexString();
+  entity.vaultAddress = eventAddress.toHexString().toLowerCase();
 
   entity.timestamp = timestamp;
 
