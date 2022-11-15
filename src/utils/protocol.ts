@@ -18,7 +18,7 @@ function _calculatePercentageDifference(vOneBigInt: BigInt, vTwoBigInt: BigInt):
   return ret;
 };
 
-export function createOrUpdateProtocolEntity(isIncrease: boolean, inPlayDelta: BigInt | null = null, tvlDelta: BigInt | null = null): void {
+export function createOrUpdateProtocolEntity(timestamp: BigInt, isIncrease: boolean, inPlayDelta: BigInt | null = null, tvlDelta: BigInt | null = null): void {
   // attempt to load the protocol entity
   let protocolEntity = Protocol.load("protocol");
 
@@ -84,5 +84,7 @@ export function createOrUpdateProtocolEntity(isIncrease: boolean, inPlayDelta: B
     }
   }
 
+  // log timestamp and save entity
+  protocolEntity.lastUpdate = timestamp;
   protocolEntity.save();
 };
