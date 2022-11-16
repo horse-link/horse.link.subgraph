@@ -11,7 +11,7 @@ dataSources:
     network: goerli
     source:
       abi: Vault
-      startBlock: 7905000
+      startBlock: 7961050
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -51,7 +51,7 @@ dataSources:
     network: goerli
     source:
       abi: Market
-      startBlock: 7905000
+      startBlock: 7961050
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
