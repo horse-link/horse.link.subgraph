@@ -5,18 +5,18 @@ function _makeLowerCase(value: string, index: i32, self: Array<string>): string 
 // addresses taken from horse.link readme
 export const MARKET_ADDRESSES = [
   // usdt market address
-  "0x3bCBfdF39F9D851de004Df7c3B2198A58e9643D5",
+  "0x44e4cA9f8939142971D5DF043fbdD5Fa6fA1273e",
 
-  // dia market address
-  "0x6dbeD7805BB73aBfE988D0c5a2505e6292c03417"
+  // dai market address
+  "0xCaEE99685Ff8cf80e605cb0E5C073056B2cf642d"
 ];
 
 export const VAULT_ADDRESSES = [
   // usdt vault
-  "0x266dB92c2236bA8B234B3656532C4178797a14bF",
+  "0xe2de33276983F28332A755c5D2Db62380a88e912",
 
-  // dia vault
-  "0x2A866428d095aCC6dD0CE9D843508EdbFe3C4f4a"
+  // dai vault
+  "0xf6A36eCd0b09C680C2E6AC3DaE3c7C397D9fBe10"
 ];
 
 export function isHorseLinkMarket(address: string): bool {
