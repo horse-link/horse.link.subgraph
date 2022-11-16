@@ -1,6 +1,10 @@
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { Protocol } from "../../generated/schema";
 
+function _getPerformanceDifference(a: BigDecimal, b: BigDecimal): BigDecimal {
+  return a.div(b).times(BigDecimal.fromString("100"));
+}
+
 export function createOrUpdateProtocolEntity(timestamp: BigInt, isIncrease: boolean, inPlayDelta: BigInt | null = null, tvlDelta: BigInt | null = null): void {
   // attempt to load the protocol entity
   let protocolEntity = Protocol.load("protocol");
@@ -43,6 +47,9 @@ export function createOrUpdateProtocolEntity(timestamp: BigInt, isIncrease: bool
       protocolEntity.currentTvl = protocolEntity.currentTvl.minus(tvlDelta);
     }
   }
+
+  // calculate performance difference
+  protocolEntity.performance = _getPerformanceDifference(new BigDecimal(protocolEntity.currentTvl), new BigDecimal(protocolEntity.initialTvl));
 
   // log timestamp and save entity
   protocolEntity.lastUpdate = timestamp;

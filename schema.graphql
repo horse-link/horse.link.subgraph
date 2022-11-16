@@ -11,6 +11,9 @@ type Protocol @entity {
   # current total value locked
   currentTvl: BigInt!
 
+  # performance as a decimal
+  performance: BigDecimal!
+
   # timestamp for when the protocol stats was last updated
   lastUpdate: BigInt!
 }
