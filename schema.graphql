@@ -5,10 +5,13 @@ type Protocol @entity {
   # total amount of tokens in play
   inPlay: BigInt!
 
-  # total value locked
-  tvl: BigInt!
+  # initial total value locked
+  initialTvl: BigInt!
 
-  # performance percentage - i.e. 100 = 100%
+  # current total value locked
+  currentTvl: BigInt!
+
+  # performance as a decimal
   performance: BigDecimal!
 
   # timestamp for when the protocol stats was last updated
