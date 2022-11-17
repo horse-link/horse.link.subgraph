@@ -62,6 +62,8 @@ dataSources:
       abis:
         - name: Market
           file: ./abis/Market.json
+        - name: Vault
+          file: ./abis/Vault.json
       eventHandlers:
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred

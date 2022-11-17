@@ -1,16 +1,18 @@
-import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 import { Placed__Params } from "../../generated/Market/Market";
 import { Bet } from "../../generated/schema";
 
-export function createBetEntity(params: Placed__Params, timestamp: BigInt, marketAddress: string, hash: Bytes): Bet {
+export function createBetEntity(params: Placed__Params, amount: BigInt, payout: BigInt, timestamp: BigInt, marketAddress: string, hash: Bytes): Bet {
   // create the entity with the index param as the id - this will allow it to be fetched from a settled event by its id
   const entity = new Bet(params.index.toString());
 
   // assign bet params
   entity.propositionId = params.propositionId;
   entity.marketId = params.marketId;
-  entity.amount = params.amount;
-  entity.payout = params.payout;
+
+  // amount and payout are formatted to 18 decimals
+  entity.amount = amount;
+  entity.payout = payout;
 
   // toHexString is best for formatting addresses to strings
   entity.owner = params.owner.toHexString().toLowerCase();
@@ -27,7 +29,7 @@ export function createBetEntity(params: Placed__Params, timestamp: BigInt, marke
 
   // set default value for settledAt and settledAtTx
   entity.settledAt = BigInt.zero();
-  entity.settledAtTx = Address.zero().toHexString().toLowerCase();
+  entity.settledAtTx = "";
 
   entity.save();
 
