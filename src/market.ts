@@ -5,9 +5,9 @@ import {
   Settled,
 } from "../generated/Market/Market";
 import { Bet } from "../generated/schema";
-import { isHorseLinkMarket, USDT_MARKET } from "./addresses";
+import { getMarketDecimals, isHorseLinkMarket } from "./addresses";
 import { settleBet, createBetEntity } from "./utils/bet";
-import { usdtAmountToEther } from "./utils/formatting";
+import { amountFromDecimalsToEther } from "./utils/formatting";
 import { createOrUpdateProtocolEntity } from "./utils/protocol";
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
@@ -23,11 +23,9 @@ export function handlePlaced(event: Placed): void {
   // create new bet entity and return it so its properties can be referenced when updating the protocol entity
   const newBetEntity = createBetEntity(event.params, event.block.timestamp, address, event.transaction.hash);
 
-  let amount = newBetEntity.amount;
-  // check if the market is usdt
-  if (USDT_MARKET.toLowerCase() == address.toLowerCase()) {
-    amount = usdtAmountToEther(amount);
-  }
+  // get amount to 18 decimal precision
+  const decimals = getMarketDecimals(event.address);
+  const amount = amountFromDecimalsToEther(newBetEntity.amount, decimals);
 
   // exposure is calculated by the payout minus the bet amount
   const exposure = newBetEntity.payout.minus(amount);
@@ -59,13 +57,10 @@ export function handleSettled(event: Settled): void {
     return;
   }
 
-  let amount = referenceBetEntity.amount;
-  let payout = referenceBetEntity.payout;
-  // check if the market is usdt
-  if (USDT_MARKET.toLowerCase() == address.toLowerCase()) {
-    amount = usdtAmountToEther(amount);
-    payout = usdtAmountToEther(payout);
-  }
+  // get amount and payout to 18 decimal precision
+  const decimals = getMarketDecimals(event.address);
+  const amount = amountFromDecimalsToEther(referenceBetEntity.amount, decimals);
+  const payout = amountFromDecimalsToEther(referenceBetEntity.payout, decimals);
 
   // if the user wins
   if (event.params.result == true) {

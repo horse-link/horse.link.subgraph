@@ -11,8 +11,8 @@ import {
   Unpaused,
   Withdraw,
 } from "../generated/Vault/Vault";
-import { isHorseLinkVault, USDT_VAULT } from "./addresses";
-import { usdtAmountToEther } from "./utils/formatting";
+import { getVaultDecimals, isHorseLinkVault } from "./addresses";
+import { amountFromDecimalsToEther } from "./utils/formatting";
 import { createOrUpdateProtocolEntity } from "./utils/protocol";
 import { createDeposit, createWithdrawal } from "./utils/vault-transaction";
 
@@ -26,11 +26,9 @@ export function handleDeposit(event: Deposit): void {
     return;
   }
 
-  let value = event.params.value;
-  // check if the vault is usdt
-  if (USDT_VAULT.toLowerCase() == address.toLowerCase()) {
-    value = usdtAmountToEther(value);
-  }
+  // get value to 18 decimal precision
+  const decimals = getVaultDecimals(event.address);
+  const value = amountFromDecimalsToEther(event.params.value, decimals);
 
   // deposits increase the tvl in the protocol
   createOrUpdateProtocolEntity(event.block.timestamp, true, null, value);
@@ -59,11 +57,9 @@ export function handleWithdraw(event: Withdraw): void {
     return;
   }
 
-  let value = event.params.value;
-  // check if the vault is usdt
-  if (USDT_VAULT.toLowerCase() == address.toLowerCase()) {
-    value = usdtAmountToEther(value);
-  }
+  // get value to 18 decimal precision
+  const decimals = getVaultDecimals(event.address);
+  const value = amountFromDecimalsToEther(event.params.value, decimals);
 
   // withdraws decrease the tvl in the protocol
   createOrUpdateProtocolEntity(event.block.timestamp, false, null, value);

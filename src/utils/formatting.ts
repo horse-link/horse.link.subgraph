@@ -1,7 +1,6 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 
-export function usdtAmountToEther(amount: BigInt): BigInt {
-  // multiply the 6 decimal precision number by 1 with 12 decimal precision, bringing it up to 18
-  const etherPrecisionAmount = amount.times(BigInt.fromString("1000000000000"));
-  return etherPrecisionAmount;
+export function amountFromDecimalsToEther(amount: BigInt, decimals: number): BigInt {
+  const differencePrecision = BigInt.fromString("10").pow(18 - decimals);
+  return amount.times(differencePrecision);
 }
