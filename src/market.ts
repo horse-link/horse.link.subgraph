@@ -25,7 +25,7 @@ export function handlePlaced(event: Placed): void {
 
   let amount = newBetEntity.amount;
   // check if the market is usdt
-  if (USDT_MARKET.toLowerCase() === address.toLowerCase()) {
+  if (USDT_MARKET.toLowerCase() == address.toLowerCase()) {
     amount = usdtAmountToEther(amount);
   }
 
@@ -62,7 +62,7 @@ export function handleSettled(event: Settled): void {
   let amount = referenceBetEntity.amount;
   let payout = referenceBetEntity.payout;
   // check if the market is usdt
-  if (USDT_MARKET.toLowerCase() === address.toLowerCase()) {
+  if (USDT_MARKET.toLowerCase() == address.toLowerCase()) {
     amount = usdtAmountToEther(amount);
     payout = usdtAmountToEther(payout);
   }

@@ -28,7 +28,7 @@ export function handleDeposit(event: Deposit): void {
 
   let value = event.params.value;
   // check if the vault is usdt
-  if (USDT_VAULT.toLowerCase() === address.toLowerCase()) {
+  if (USDT_VAULT.toLowerCase() == address.toLowerCase()) {
     value = usdtAmountToEther(value);
   }
 
@@ -61,7 +61,7 @@ export function handleWithdraw(event: Withdraw): void {
 
   let value = event.params.value;
   // check if the vault is usdt
-  if (USDT_VAULT.toLowerCase() === address.toLowerCase()) {
+  if (USDT_VAULT.toLowerCase() == address.toLowerCase()) {
     value = usdtAmountToEther(value);
   }
 

@@ -10,8 +10,11 @@ export function createOrUpdatedRegistryEntity(address: string, isMarket: boolean
     // id should always be registry
     registryEntity = new Registry("registry");
 
-    registryEntity.vaults = [Address.zero().toHexString()];
-    registryEntity.markets = [Address.zero().toHexString()];
+    const emptyArray: string[] = [];
+    emptyArray.push(Address.zero().toHexString());
+
+    registryEntity.vaults = emptyArray;
+    registryEntity.markets = emptyArray;
     registryEntity.lastUpdate = BigInt.zero();
   }
 
