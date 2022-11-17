@@ -18,6 +18,20 @@ type Protocol @entity {
   lastUpdate: BigInt!
 }
 
+type Registry @entity {
+  # id should always be "registry"
+  id: ID!
+
+  # array of vaults
+  vaults: [String!]!
+
+  # array of markets
+  markets: [String!]!
+
+  # timestamp for when the registry was last updated
+  lastUpdate: BigInt!
+}
+
 type Bet @entity {
   # index param from placed event, id param from settled event
   id: ID!

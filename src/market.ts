@@ -5,8 +5,9 @@ import {
   Settled,
 } from "../generated/Market/Market";
 import { Bet } from "../generated/schema";
-import { isHorseLinkMarket } from "./addresses";
+import { isHorseLinkMarket, USDT_MARKET } from "./addresses";
 import { settleBet, createBetEntity } from "./utils/bet";
+import { usdtAmountToEther } from "./utils/formatting";
 import { createOrUpdateProtocolEntity } from "./utils/protocol";
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
@@ -22,11 +23,17 @@ export function handlePlaced(event: Placed): void {
   // create new bet entity and return it so its properties can be referenced when updating the protocol entity
   const newBetEntity = createBetEntity(event.params, event.block.timestamp, address, event.transaction.hash);
 
+  let amount = newBetEntity.amount;
+  // check if the market is usdt
+  if (USDT_MARKET.toLowerCase() === address.toLowerCase()) {
+    amount = usdtAmountToEther(amount);
+  }
+
   // exposure is calculated by the payout minus the bet amount
-  const exposure = newBetEntity.payout.minus(newBetEntity.amount);
+  const exposure = newBetEntity.payout.minus(amount);
 
   // placed bets increase total in play by the bet amount which can come from the new entity, exposure increases tvl
-  createOrUpdateProtocolEntity(event.block.timestamp, true, newBetEntity.amount, exposure);
+  createOrUpdateProtocolEntity(event.block.timestamp, true, amount, exposure);
 }
 
 export function handleSettled(event: Settled): void {
@@ -52,15 +59,23 @@ export function handleSettled(event: Settled): void {
     return;
   }
 
+  let amount = referenceBetEntity.amount;
+  let payout = referenceBetEntity.payout;
+  // check if the market is usdt
+  if (USDT_MARKET.toLowerCase() === address.toLowerCase()) {
+    amount = usdtAmountToEther(amount);
+    payout = usdtAmountToEther(payout);
+  }
+
   // if the user wins
   if (event.params.result == true) {
     // tvl is decreased by exposure, and in play is decreased by amount
-    const exposure = referenceBetEntity.amount.minus(referenceBetEntity.amount);
-    createOrUpdateProtocolEntity(event.block.timestamp, false, referenceBetEntity.amount, exposure);
+    const exposure = payout.minus(amount);
+    createOrUpdateProtocolEntity(event.block.timestamp, false, amount, exposure);
     return;
   }
 
   // if the user lost, in play is *decreased*, and tvl is *increased* by original amount
-  createOrUpdateProtocolEntity(event.block.timestamp, false, referenceBetEntity.amount, null);
-  createOrUpdateProtocolEntity(event.block.timestamp, true, null, referenceBetEntity.amount);
+  createOrUpdateProtocolEntity(event.block.timestamp, false, amount, null);
+  createOrUpdateProtocolEntity(event.block.timestamp, true, null, amount);
 }

@@ -70,3 +70,29 @@ dataSources:
         - event: Settled(uint256,uint256,bool,indexed address)
           handler: handleSettled
       file: ./src/market.ts
+
+  # REGISTRY
+  - kind: ethereum/contract
+    name: Registry
+    network: goerli
+    source:
+      address: '0xCFa36F3692b19FF9472aEc18f7dcf5EB0A29A633'
+      abi: Registry
+      startBlock: 7961050
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Registry
+      abis:
+        - name: Registry
+          file: ./abis/Registry.json
+      eventHandlers:
+        - event: MarketAdded(indexed address)
+          handler: handleMarketAdded
+        - event: ThresholdUpdated(uint256)
+          handler: handleThresholdUpdated
+        - event: VaultAdded(indexed address)
+          handler: handleVaultAdded
+      file: ./src/registry.ts
