@@ -23,15 +23,13 @@ export function isHorseLinkVault(address: string): bool {
   return vaults.map<string>(_makeLowerCase).includes(address.toLowerCase());
 }
 
-export function getMarketDecimals(marketAddress: Address): number {
-  const marketContract = Market.bind(marketAddress);
-  const vaultAddress = marketContract.getVaultAddress();
+export function getVaultDecimals(vaultAddress: Address): number {
   const vaultContract = Vault.bind(vaultAddress);
   return vaultContract.decimals();
 }
 
-export function getVaultDecimals(vaultAddress: Address): number {
-  const vaultContract = Vault.bind(vaultAddress);
-  const decimals = vaultContract.decimals();
-  return vaultContract.decimals();
+export function getMarketDecimals(marketAddress: Address): number {
+  const marketContract = Market.bind(marketAddress);
+  const vaultAddress = marketContract.getVaultAddress();
+  return getVaultDecimals(vaultAddress);
 }
