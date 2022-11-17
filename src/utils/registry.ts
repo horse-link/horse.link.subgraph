@@ -11,7 +11,6 @@ export function createOrUpdatedRegistryEntity(address: string, isMarket: boolean
     registryEntity = new Registry("registry");
 
     const emptyArray: string[] = [];
-    emptyArray.push(Address.zero().toHexString());
 
     registryEntity.vaults = emptyArray;
     registryEntity.markets = emptyArray;
