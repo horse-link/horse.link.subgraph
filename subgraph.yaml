@@ -59,6 +59,7 @@ dataSources:
       entities:
         - Protocol
         - Bet
+        - Aggregator
       abis:
         - name: Market
           file: ./abis/Market.json
@@ -87,6 +88,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Registry
+        - Aggregator
       abis:
         - name: Registry
           file: ./abis/Registry.json

@@ -1,3 +1,17 @@
+type Aggregator @entity {
+  # id should always be aggregator
+  id: ID!
+
+  # count of total markets
+  totalMarkets: BigInt!
+
+  # count of total vaults
+  totalVaults: BigInt!
+
+  # count of total bet
+  totalBets: BigInt!
+}
+
 type Protocol @entity {
   # id should always be "protocol"
   id: ID!

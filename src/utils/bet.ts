@@ -1,10 +1,18 @@
 import { BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 import { Placed__Params } from "../../generated/Market/Market";
 import { Bet } from "../../generated/schema";
+import { incrementBets } from "./aggregator";
 
 export function createBetEntity(params: Placed__Params, amount: BigInt, payout: BigInt, timestamp: BigInt, marketAddress: string, hash: Bytes): Bet {
-  // create the entity with the index param as the id - this will allow it to be fetched from a settled event by its id
-  const entity = new Bet(params.index.toString());
+  // check if entity exists already
+  let entity = Bet.load(params.index.toString());
+  // if the bet does not exist already
+  if (entity == null) {
+    // increment bets in aggregator
+    incrementBets();
+    // create the entity with the index param as the id - this will allow it to be fetched from a settled event by its id
+    entity = new Bet(params.index.toString());
+  }
 
   // assign bet params
   entity.propositionId = params.propositionId;
