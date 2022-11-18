@@ -57,7 +57,11 @@ export function handleWithdraw(event: Withdraw): void {
     return;
   }
 
+  // get value to 18 decimal precision
+  const decimals = getVaultDecimals(event.address);
+  const value = amountFromDecimalsToEther(event.params.value, decimals);
+
   // withdraws decrease the tvl in the protocol
-  createOrUpdateProtocolEntity(event.block.timestamp, false, null, event.params.value);
+  createOrUpdateProtocolEntity(event.block.timestamp, false, null, value);
   createWithdrawal(event.params, event.transaction, event.block.timestamp, address);
 }
