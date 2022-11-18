@@ -2,7 +2,7 @@ import { BigInt, ethereum } from "@graphprotocol/graph-ts";
 import { VaultTransaction } from "../../generated/schema";
 import { Deposit__Params, Withdraw__Params } from "../../generated/Vault/Vault";
 
-export function createDeposit(params: Deposit__Params, tx: ethereum.Transaction, timestamp: BigInt, eventAddress: string): void {
+export function createDeposit(params: Deposit__Params, value: BigInt, tx: ethereum.Transaction, timestamp: BigInt, eventAddress: string): void {
   // make sure that the type for deposits will always be "deposit"
   const type = "deposit";
 
@@ -11,7 +11,7 @@ export function createDeposit(params: Deposit__Params, tx: ethereum.Transaction,
 
   // populate entity fields
   entity.type = type;
-  entity.amount = params.value;
+  entity.amount = value;
   entity.depositerAddress = params.who.toHexString().toLowerCase();
 
   // the vaultAddress will be the zero address if a tx.to is not provided
@@ -22,7 +22,7 @@ export function createDeposit(params: Deposit__Params, tx: ethereum.Transaction,
   entity.save();
 }
 
-export function createWithdrawal(params: Withdraw__Params, tx: ethereum.Transaction, timestamp: BigInt, eventAddress: string): void {
+export function createWithdrawal(params: Withdraw__Params, value: BigInt, tx: ethereum.Transaction, timestamp: BigInt, eventAddress: string): void {
   // make sure that the type for withdrawals will always be "withdraw"
   const type = "withdraw";
 
@@ -31,7 +31,7 @@ export function createWithdrawal(params: Withdraw__Params, tx: ethereum.Transact
 
   // populate entity fields
   entity.type = type;
-  entity.amount = params.value;
+  entity.amount = value;
   entity.depositerAddress = params.who.toHexString().toLowerCase();
 
   // the vaultAddress will be the zero address if a tx.to is not provided
