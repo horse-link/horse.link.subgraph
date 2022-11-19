@@ -79,7 +79,7 @@ dataSources:
     name: Registry
     network: goerli
     source:
-      address: '0x3908D82A08afFB180B99F95Cfb40C3b2Daa7Fd9f'
+      address: '0xcaCBf4861DF8c39f854e06743a2Be7DCd9883929'
       abi: Registry
       startBlock: 7973580
     mapping:
