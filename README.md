@@ -4,10 +4,12 @@
 
 ## Entities
 
-Aggregator - keeps a record of entity counts (NOTE: `id` will always be `aggregator`)
+### Aggregator
 
-```
-Aggregator {
+Keeps a record of entity counts (NOTE: `id` will always be `aggregator`)
+
+```graphql
+Aggregator @entity {
   id: ID!
   totalMarkets: BigInt!
   totalVaults: BigInt!
@@ -16,10 +18,12 @@ Aggregator {
 }
 ```
 
-Protocol - tracks protocol-wide data (NOTE: `id` will always be `protocol`)
+### Protocol 
 
-```
-Protocol {
+Tracks protocol-wide data (NOTE: `id` will always be `protocol`)
+
+```graphql
+Protocol @entity {
   id: ID!
   inPlay: BigInt!
   initialTvl: BigInt!
@@ -29,10 +33,12 @@ Protocol {
 }
 ```
 
-Registry - reflects the registry contract's data (NOTE: `id` will always be `registry`)
+### Registry 
 
-```
-Registry {
+Reflects the registry contract's data (NOTE: `id` will always be `registry`)
+
+```graphql
+Registry @entity {
   id: ID!
   vaults: [String!]!
   markets: [String!]!
@@ -40,10 +46,12 @@ Registry {
 }
 ```
 
-Bet - an entity that tracks a single bet and its data (NOTE: `id` will be the bet id, `didWin` will only reflect accurately when `settled` is `true`)
+### Bet 
 
-```
-Bet {
+An entity that tracks a single bet and its data (NOTE: `id` will be the bet id, `didWin` will only reflect accurately when `settled` is `true`)
+
+```graphql
+Bet @entity {
   id: ID!
   propositionId: Bytes!
   marketId: Bytes!
@@ -61,10 +69,12 @@ Bet {
 }
 ```
 
-Vault Transaction - an entity that tracks a single vault transaction and its data (NOTE: `id` will be the tx hash, `type` will either be `deposit` or `withdraw`)
+### Vault Transaction 
 
-```
-VaultTransaction {
+An entity that tracks a single vault transaction and its data (NOTE: `id` will be the tx hash, `type` will either be `deposit` or `withdraw`)
+
+```graphql
+VaultTransaction @entity {
   id: ID!
   type: String!
   vaultAddress: String!
