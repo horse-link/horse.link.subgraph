@@ -12,7 +12,7 @@ export function createDeposit(params: Deposit__Params, value: BigInt, tx: ethere
   // populate entity fields
   entity.type = type;
   entity.amount = value;
-  entity.depositerAddress = params.who.toHexString().toLowerCase();
+  entity.userAddress = params.who.toHexString().toLowerCase();
 
   // the vaultAddress will be the zero address if a tx.to is not provided
   entity.vaultAddress = eventAddress.toLowerCase();
@@ -32,7 +32,7 @@ export function createWithdrawal(params: Withdraw__Params, value: BigInt, tx: et
   // populate entity fields
   entity.type = type;
   entity.amount = value;
-  entity.depositerAddress = params.who.toHexString().toLowerCase();
+  entity.userAddress = params.who.toHexString().toLowerCase();
 
   // the vaultAddress will be the zero address if a tx.to is not provided
   entity.vaultAddress = eventAddress.toLowerCase();

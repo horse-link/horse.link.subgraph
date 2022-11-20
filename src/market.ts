@@ -46,8 +46,11 @@ export function handleSettled(event: Settled): void {
   // assign id to constant so its easier to reference, this corresponds to the original bet's index property
   const id = event.params.id.toString().toLowerCase();
 
+  // assign result for ease of referencing
+  const didWin = event.params.result;
+
   // the bet is settled so it can be marked as such
-  settleBet(id, event.block.timestamp, event.transaction.hash);
+  settleBet(id, didWin, event.block.timestamp, event.transaction.hash);
 
   // get the original bet entity so its amount can be referenced
   const referenceBetEntity = Bet.load(id);
@@ -58,8 +61,8 @@ export function handleSettled(event: Settled): void {
     return;
   }
 
-  // if the user wins
-  if (event.params.result == true) {
+  // if the user win
+  if (didWin == true) {
     // tvl is decreased by exposure, and in play is decreased by amount
     const exposure = referenceBetEntity.payout.minus(referenceBetEntity.amount);
     createOrUpdateProtocolEntity(event.block.timestamp, false, referenceBetEntity.amount, exposure);

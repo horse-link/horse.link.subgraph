@@ -10,7 +10,7 @@ export function createBetEntity(params: Placed__Params, amount: BigInt, payout: 
   // if the bet does not exist already
   if (entity == null) {
     // increment bets in aggregator
-    incrementBets();
+    incrementBets(timestamp);
     // create the entity with the index param as the id - this will allow it to be fetched from a settled event by its id
     entity = new Bet(params.index.toString());
   }
@@ -32,12 +32,15 @@ export function createBetEntity(params: Placed__Params, amount: BigInt, payout: 
   // store the asset address
   entity.assetAddress = getMarketAssetAddress(Address.fromString(marketAddress));
 
-  // intialize bets as being unsettled as this function is called from handlePlaced
-  entity.settled = false;
-
   // store the timestamp for when the bet is created, and the hash for the tx
   entity.createdAt = timestamp;
   entity.createdAtTx = hash.toHexString().toLowerCase();
+
+  // intialize bets as being unsettled
+  entity.settled = false;
+
+  // initialize bets as a loss - will reflect accurately when settled is true
+  entity.didWin = false;
 
   // set default value for settledAt and settledAtTx
   entity.settledAt = BigInt.zero();
@@ -49,7 +52,7 @@ export function createBetEntity(params: Placed__Params, amount: BigInt, payout: 
   return entity;
 };
 
-export function settleBet(id: string, timestamp: BigInt, hash: Bytes): void {
+export function settleBet(id: string, didWin: boolean, timestamp: BigInt, hash: Bytes): void {
   const entity = Bet.load(id);
 
   // exit and log an error if the entity could not be found
@@ -64,8 +67,9 @@ export function settleBet(id: string, timestamp: BigInt, hash: Bytes): void {
     return;
   }
 
-  // settle bet and store timestamp when its settled as well as tx hash
+  // settle bet with result and store timestamp when its settled as well as tx hash
   entity.settled = true;
+  entity.didWin = didWin;
   entity.settledAt = timestamp;
   entity.settledAtTx = hash.toHexString().toLowerCase();
 

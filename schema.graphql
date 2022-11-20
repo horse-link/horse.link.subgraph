@@ -10,6 +10,9 @@ type Aggregator @entity {
 
   # count of total bet
   totalBets: BigInt!
+
+  # timestamp for last update
+  lastUpdate: BigInt!
 }
 
 type Protocol @entity {
@@ -74,6 +77,9 @@ type Bet @entity {
   # whether the bet is settled or not
   settled: Boolean!
 
+  # whether the user won or lost
+  didWin: Boolean!
+
   # timestamp when bet is placed
   createdAt: BigInt!
 
@@ -98,7 +104,7 @@ type VaultTransaction @entity {
   vaultAddress: String!
 
   # address of depositer
-  depositerAddress: String!
+  userAddress: String!
 
   # amount of token
   amount: BigInt!

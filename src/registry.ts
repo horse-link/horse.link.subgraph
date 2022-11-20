@@ -13,7 +13,7 @@ export function handleMarketAdded(event: MarketAdded): void {
   log.info(`Market registered ${address}`, []);
 
   // increment markets in aggregator
-  incrementMarkets();
+  incrementMarkets(event.block.timestamp);
 }
 
 export function handleVaultAdded(event: VaultAdded): void {
@@ -22,7 +22,7 @@ export function handleVaultAdded(event: VaultAdded): void {
   log.info(`Vault registered ${address}`, []);
 
   // increment vaults in aggregator
-  incrementVaults();
+  incrementVaults(event.block.timestamp);
 }
 
 export function handleThresholdUpdated(event: ThresholdUpdated): void {}
