@@ -59,7 +59,8 @@ type Bet @entity {
   # address for market contract
   marketAddress: String!
 
-  # todo: add token address when its added to event
+  # address for underlying asset
+  assetAddress: String!
 
   # amount of token wagered
   amount: BigInt!

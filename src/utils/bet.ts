@@ -1,6 +1,7 @@
-import { BigInt, Bytes, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 import { Placed__Params } from "../../generated/Market/Market";
 import { Bet } from "../../generated/schema";
+import { getMarketAssetAddress } from "../addresses";
 import { incrementBets } from "./aggregator";
 
 export function createBetEntity(params: Placed__Params, amount: BigInt, payout: BigInt, timestamp: BigInt, marketAddress: string, hash: Bytes): Bet {
@@ -27,6 +28,9 @@ export function createBetEntity(params: Placed__Params, amount: BigInt, payout: 
 
   // store the market address
   entity.marketAddress = marketAddress.toLowerCase();
+
+  // store the asset address
+  entity.assetAddress = getMarketAssetAddress(Address.fromString(marketAddress));
 
   // intialize bets as being unsettled as this function is called from handlePlaced
   entity.settled = false;

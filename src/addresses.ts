@@ -33,3 +33,10 @@ export function getMarketDecimals(marketAddress: Address): number {
   const vaultAddress = marketContract.getVaultAddress();
   return getVaultDecimals(vaultAddress);
 }
+
+export function getMarketAssetAddress(marketAddress: Address): string {
+  const marketContract = Market.bind(marketAddress);
+  const vaultAddress = marketContract.getVaultAddress();
+  const vaultContract = Vault.bind(vaultAddress);
+  return vaultContract.asset().toHexString().toLowerCase();
+}
