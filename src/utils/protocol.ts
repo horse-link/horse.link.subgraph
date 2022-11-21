@@ -3,55 +3,56 @@ import { Protocol } from "../../generated/schema";
 
 function _getPerformanceDifference(a: BigDecimal, b: BigDecimal): BigDecimal {
   return a.div(b).times(BigDecimal.fromString("100"));
-}
+};
 
-export function createOrUpdateProtocolEntity(timestamp: BigInt, isIncrease: boolean, inPlayDelta: BigInt | null = null, tvlDelta: BigInt | null = null): void {
-  // attempt to load the protocol entity
-  let protocolEntity = Protocol.load("protocol");
+function _initialiseProtocol(tvlDelta: BigInt | null = null): Protocol {
+  const protocolEntity = new Protocol("protocol");
 
-  // if it doesn't exist (i.e. the protocol has been interacted with for the first time) create it
-  if (protocolEntity == null) {
-    protocolEntity = new Protocol("protocol");
+  protocolEntity.inPlay = BigInt.zero();
+  protocolEntity.initialTvl = BigInt.zero();
+  protocolEntity.currentTvl = BigInt.zero();
 
-    // initialize total in play and tvl as zero to start with
-    protocolEntity.inPlay = BigInt.zero();
-    protocolEntity.initialTvl = BigInt.zero();
-    protocolEntity.currentTvl = BigInt.zero();
+  if (tvlDelta !== null) protocolEntity.initialTvl = tvlDelta;
 
-    // set the initial tvl to the first delta
-    if (tvlDelta !== null) protocolEntity.initialTvl = tvlDelta;
+  return protocolEntity;
+};
+
+function _getProtocol(tvlDelta: BigInt | null = null): Protocol {
+  let registryEntity = Protocol.load("protocol");
+  if (registryEntity == null) {
+    registryEntity = _initialiseProtocol(tvlDelta);
+  }
+  return registryEntity;
+};
+
+export function changeProtocolInPlay(inPlayDelta: BigInt, isIncrease: boolean, timestamp: BigInt): void {
+  const protocolEntity = _getProtocol(null);
+
+  const currentInPlay = protocolEntity.inPlay;
+
+  if (isIncrease == true) {
+    protocolEntity.inPlay = currentInPlay.plus(inPlayDelta);
+  } else {
+    protocolEntity.inPlay = currentInPlay.minus(inPlayDelta);
   }
 
-  // if an inPlayDelta is provided update the inPlay property
-  if (inPlayDelta !== null) {
-    // if the delta is an increase
-    if (isIncrease == true) {
-      protocolEntity.inPlay = protocolEntity.inPlay.plus(inPlayDelta);
+  protocolEntity.lastUpdate = timestamp;
+  protocolEntity.save();
+};
 
-      // delta is a decrease
-    } else {
-      protocolEntity.inPlay = protocolEntity.inPlay.minus(inPlayDelta);
-    }
+export function changeProtocolTvl(tvlDelta: BigInt, isIncrease: boolean, timestamp: BigInt): void {
+  const protocolEntity = _getProtocol(tvlDelta);
+
+  const currentTvl = protocolEntity.currentTvl;
+
+  if (isIncrease == true) {
+    protocolEntity.currentTvl = currentTvl.plus(tvlDelta);
+  } else {
+    protocolEntity.currentTvl = currentTvl.minus(tvlDelta);
   }
 
-  // if a tvlDelta is provided update the tvl property
-  if (tvlDelta !== null) {
-    // if the delta is an increase
-    if (isIncrease == true) {
-      // set the protocol tvl to the new tvl
-      protocolEntity.currentTvl = protocolEntity.currentTvl.plus(tvlDelta);
-
-      // if the delta is a decrease
-    } else {
-      // set the protocol tvl to the new tvl
-      protocolEntity.currentTvl = protocolEntity.currentTvl.minus(tvlDelta);
-    }
-  }
-
-  // calculate performance difference
   protocolEntity.performance = _getPerformanceDifference(new BigDecimal(protocolEntity.currentTvl), new BigDecimal(protocolEntity.initialTvl));
 
-  // log timestamp and save entity
   protocolEntity.lastUpdate = timestamp;
   protocolEntity.save();
 };

@@ -12,11 +12,16 @@ function _initialiseUser(userAddress: Address): User {
   return userEntity;
 };
 
-export function changeUserPnl(address: Address, pnlDelta: BigInt, isIncrease: boolean, timestamp: BigInt): void {
+function _getUser(address: Address): User {
   let userEntity = User.load(address.toHexString().toLowerCase());
   if (userEntity == null) {
     userEntity = _initialiseUser(address);
   }
+  return userEntity;
+};
+
+export function changeUserPnl(address: Address, pnlDelta: BigInt, isIncrease: boolean, timestamp: BigInt): void {
+  const userEntity = _getUser(address);
 
   const currentPnl = userEntity.pnl;
 
@@ -31,10 +36,7 @@ export function changeUserPnl(address: Address, pnlDelta: BigInt, isIncrease: bo
 };
 
 export function changeUserTotalDepsited(address: Address, depositedDelta: BigInt, isIncrease: boolean, timestamp: BigInt): void {
-  let userEntity = User.load(address.toHexString().toLowerCase());
-  if (userEntity == null) {
-    userEntity = _initialiseUser(address);
-  }
+  const userEntity = _getUser(address);
 
   const currentDeposited = userEntity.totalDeposited;
 
@@ -49,10 +51,7 @@ export function changeUserTotalDepsited(address: Address, depositedDelta: BigInt
 };
 
 export function changeUserInPlay(address: Address, inPlayDelta: BigInt, isIncrease: boolean, timestamp: BigInt): void {
-  let userEntity = User.load(address.toHexString().toLowerCase());
-  if (userEntity == null) {
-    userEntity = _initialiseUser(address);
-  }
+  const userEntity = _getUser(address);
 
   const currentInPlay = userEntity.inPlay;
 

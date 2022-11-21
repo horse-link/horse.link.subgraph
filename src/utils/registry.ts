@@ -1,46 +1,46 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import { Registry } from "../../generated/schema";
 
-export function createOrUpdatedRegistryEntity(address: string, isMarket: boolean, timestamp: BigInt): void {
-  // attempt to load the registry entity
+function _initialiseRegistry(): Registry {
+  const registryEntity = new Registry("registry");
+
+  const emptyArray: string[] = [];
+
+  registryEntity.vaults = emptyArray;
+  registryEntity.markets = emptyArray;
+  registryEntity.lastUpdate = BigInt.zero();
+
+  return registryEntity;
+};
+
+function _getRegistry(): Registry {
   let registryEntity = Registry.load("registry");
-
-  // if the registry doesnt exist, create a new one to store all the vaults and markets
   if (registryEntity == null) {
-    // id should always be registry
-    registryEntity = new Registry("registry");
-
-    const emptyArray: string[] = [];
-
-    registryEntity.vaults = emptyArray;
-    registryEntity.markets = emptyArray;
-    registryEntity.lastUpdate = BigInt.zero();
+    registryEntity = _initialiseRegistry();
   }
+  return registryEntity;
+};
 
-  // if the address is a market
-  if (isMarket == true) {
-    // clone the current markets
-    const markets = registryEntity.markets;
+export function addMarketToRegistry(address: Address, timestamp: BigInt): void {
+  const registryEntity = _getRegistry();
 
-    // appends the new market address
-    markets.push(address.toLowerCase());
+  const markets = registryEntity.markets;
+  markets.push(address.toHexString().toLowerCase());
 
-    // assign the new markets array
-    registryEntity.markets = markets;
-  
-  // if the address is not a market, it is a vault
-  } else {
-    // clone the current vaults
-    const vaults = registryEntity.vaults;
+  registryEntity.markets = markets;
 
-    // append the new vault address
-    vaults.push(address.toLowerCase());
-
-    // assign the new vaults array
-    registryEntity.vaults = vaults;
-  }
-
-  // log timestamp and save entity
   registryEntity.lastUpdate = timestamp;
   registryEntity.save();
 }
+
+export function addVaultToRegistry(address: Address, timestamp: BigInt): void {
+  const registryEntity = _getRegistry();
+
+  const vaults = registryEntity.vaults;
+  vaults.push(address.toHexString().toLowerCase());
+
+  registryEntity.vaults = vaults;
+
+  registryEntity.lastUpdate = timestamp;
+  registryEntity.save();
+};

@@ -13,7 +13,7 @@ import {
 } from "../generated/Vault/Vault";
 import { getVaultDecimals, isHorseLinkVault } from "./addresses";
 import { amountFromDecimalsToEther } from "./utils/formatting";
-import { createOrUpdateProtocolEntity } from "./utils/protocol";
+import { changeProtocolTvl } from "./utils/protocol";
 import { changeUserTotalDepsited } from "./utils/user";
 import { createDeposit, createWithdrawal } from "./utils/vault-transaction";
 
@@ -32,7 +32,7 @@ export function handleDeposit(event: Deposit): void {
   const value = amountFromDecimalsToEther(event.params.value, decimals);
 
   // deposits increase the tvl in the protocol
-  createOrUpdateProtocolEntity(event.block.timestamp, true, null, value);
+  changeProtocolTvl(value, true, event.block.timestamp);
   createDeposit(event.params, value, event.transaction, event.block.timestamp, address);
 
   // increase total deposited for user
@@ -66,7 +66,7 @@ export function handleWithdraw(event: Withdraw): void {
   const value = amountFromDecimalsToEther(event.params.value, decimals);
 
   // withdraws decrease the tvl in the protocol
-  createOrUpdateProtocolEntity(event.block.timestamp, false, null, value);
+  changeProtocolTvl(value, false, event.block.timestamp);
   createWithdrawal(event.params, value, event.transaction, event.block.timestamp, address);
 
   // decrease total deposited for user
