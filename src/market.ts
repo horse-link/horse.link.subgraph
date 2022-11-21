@@ -9,6 +9,7 @@ import { getMarketDecimals, isHorseLinkMarket } from "./addresses";
 import { settleBet, createBetEntity } from "./utils/bet";
 import { amountFromDecimalsToEther } from "./utils/formatting";
 import { createOrUpdateProtocolEntity } from "./utils/protocol";
+import { changeUserInPlay, changeUserPnl } from "./utils/user";
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
 
@@ -33,6 +34,9 @@ export function handlePlaced(event: Placed): void {
 
   // placed bets increase total in play by the bet amount which can come from the new entity, exposure increases tvl
   createOrUpdateProtocolEntity(event.block.timestamp, true, newBetEntity.amount, exposure);
+
+  // increase total in play for user
+  changeUserInPlay(event.params.owner, amount, true, event.block.timestamp);
 }
 
 export function handleSettled(event: Settled): void {
@@ -61,15 +65,25 @@ export function handleSettled(event: Settled): void {
     return;
   }
 
+  // decrease user in play
+  changeUserInPlay(event.params.owner, referenceBetEntity.amount, false, event.block.timestamp);
+
   // if the user win
   if (didWin == true) {
     // tvl is decreased by exposure, and in play is decreased by amount
     const exposure = referenceBetEntity.payout.minus(referenceBetEntity.amount);
     createOrUpdateProtocolEntity(event.block.timestamp, false, referenceBetEntity.amount, exposure);
+
+    // increase user pnl by exposure
+    changeUserPnl(event.params.owner, exposure, true, event.block.timestamp);
+
     return;
   }
 
   // if the user lost, in play is *decreased*, and tvl is *increased* by original amount
   createOrUpdateProtocolEntity(event.block.timestamp, false, referenceBetEntity.amount, null);
   createOrUpdateProtocolEntity(event.block.timestamp, true, null, referenceBetEntity.amount);
+
+  // decrease user pnl
+  changeUserPnl(event.params.owner, referenceBetEntity.amount, false, event.block.timestamp);
 }

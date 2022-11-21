@@ -112,3 +112,20 @@ type VaultTransaction @entity {
   # timestamp of transaction
   timestamp: BigInt!
 }
+
+type User @entity {
+  # id will be address
+  id: ID!
+
+  # total deposited for user
+  totalDeposited: BigInt!
+
+  # total in play for user
+  inPlay: BigInt!
+
+  # profit or loss for user
+  pnl: BigInt!
+
+  # when user entity was last updated
+  lastUpdate: BigInt!
+}
