@@ -5,8 +5,9 @@ import {
   Settled,
 } from "../generated/Market/Market";
 import { Bet } from "../generated/schema";
-import { isHorseLinkMarket } from "./addresses";
+import { getMarketDecimals, isHorseLinkMarket } from "./addresses";
 import { settleBet, createBetEntity } from "./utils/bet";
+import { amountFromDecimalsToEther } from "./utils/formatting";
 import { createOrUpdateProtocolEntity } from "./utils/protocol";
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
@@ -19,8 +20,13 @@ export function handlePlaced(event: Placed): void {
     return;
   }
 
+  // get amount and payout to 18 decimal precision
+  const decimals = getMarketDecimals(event.address);
+  const amount = amountFromDecimalsToEther(event.params.amount, decimals);
+  const payout = amountFromDecimalsToEther(event.params.payout, decimals);
+
   // create new bet entity and return it so its properties can be referenced when updating the protocol entity
-  const newBetEntity = createBetEntity(event.params, event.block.timestamp, address, event.transaction.hash);
+  const newBetEntity = createBetEntity(event.params, amount, payout, event.block.timestamp, address, event.transaction.hash);
 
   // exposure is calculated by the payout minus the bet amount
   const exposure = newBetEntity.payout.minus(newBetEntity.amount);
@@ -40,8 +46,11 @@ export function handleSettled(event: Settled): void {
   // assign id to constant so its easier to reference, this corresponds to the original bet's index property
   const id = event.params.id.toString().toLowerCase();
 
+  // assign result for ease of referencing
+  const didWin = event.params.result;
+
   // the bet is settled so it can be marked as such
-  settleBet(id, event.block.timestamp, event.transaction.hash);
+  settleBet(id, didWin, event.block.timestamp, event.transaction.hash);
 
   // get the original bet entity so its amount can be referenced
   const referenceBetEntity = Bet.load(id);
@@ -52,10 +61,10 @@ export function handleSettled(event: Settled): void {
     return;
   }
 
-  // if the user wins
-  if (event.params.result == true) {
+  // if the user win
+  if (didWin == true) {
     // tvl is decreased by exposure, and in play is decreased by amount
-    const exposure = referenceBetEntity.amount.minus(referenceBetEntity.amount);
+    const exposure = referenceBetEntity.payout.minus(referenceBetEntity.amount);
     createOrUpdateProtocolEntity(event.block.timestamp, false, referenceBetEntity.amount, exposure);
     return;
   }

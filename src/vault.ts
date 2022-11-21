@@ -11,7 +11,8 @@ import {
   Unpaused,
   Withdraw,
 } from "../generated/Vault/Vault";
-import { isHorseLinkVault } from "./addresses";
+import { getVaultDecimals, isHorseLinkVault } from "./addresses";
+import { amountFromDecimalsToEther } from "./utils/formatting";
 import { createOrUpdateProtocolEntity } from "./utils/protocol";
 import { createDeposit, createWithdrawal } from "./utils/vault-transaction";
 
@@ -25,9 +26,13 @@ export function handleDeposit(event: Deposit): void {
     return;
   }
 
+  // get value to 18 decimal precision
+  const decimals = getVaultDecimals(event.address);
+  const value = amountFromDecimalsToEther(event.params.value, decimals);
+
   // deposits increase the tvl in the protocol
-  createOrUpdateProtocolEntity(event.block.timestamp, true, null, event.params.value);
-  createDeposit(event.params, event.transaction, event.block.timestamp, address);
+  createOrUpdateProtocolEntity(event.block.timestamp, true, null, value);
+  createDeposit(event.params, value, event.transaction, event.block.timestamp, address);
 }
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
@@ -52,7 +57,11 @@ export function handleWithdraw(event: Withdraw): void {
     return;
   }
 
+  // get value to 18 decimal precision
+  const decimals = getVaultDecimals(event.address);
+  const value = amountFromDecimalsToEther(event.params.value, decimals);
+
   // withdraws decrease the tvl in the protocol
-  createOrUpdateProtocolEntity(event.block.timestamp, false, null, event.params.value);
-  createWithdrawal(event.params, event.transaction, event.block.timestamp, address);
+  createOrUpdateProtocolEntity(event.block.timestamp, false, null, value);
+  createWithdrawal(event.params, value, event.transaction, event.block.timestamp, address);
 }

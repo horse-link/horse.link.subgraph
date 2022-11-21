@@ -1,3 +1,20 @@
+type Aggregator @entity {
+  # id should always be aggregator
+  id: ID!
+
+  # count of total markets
+  totalMarkets: BigInt!
+
+  # count of total vaults
+  totalVaults: BigInt!
+
+  # count of total bet
+  totalBets: BigInt!
+
+  # timestamp for last update
+  lastUpdate: BigInt!
+}
+
 type Protocol @entity {
   # id should always be "protocol"
   id: ID!
@@ -18,6 +35,20 @@ type Protocol @entity {
   lastUpdate: BigInt!
 }
 
+type Registry @entity {
+  # id should always be "registry"
+  id: ID!
+
+  # array of vaults
+  vaults: [String!]!
+
+  # array of markets
+  markets: [String!]!
+
+  # timestamp for when the registry was last updated
+  lastUpdate: BigInt!
+}
+
 type Bet @entity {
   # index param from placed event, id param from settled event
   id: ID!
@@ -31,7 +62,8 @@ type Bet @entity {
   # address for market contract
   marketAddress: String!
 
-  # todo: add token address when its added to event
+  # address for underlying asset
+  assetAddress: String!
 
   # amount of token wagered
   amount: BigInt!
@@ -44,6 +76,9 @@ type Bet @entity {
 
   # whether the bet is settled or not
   settled: Boolean!
+
+  # whether the user won or lost
+  didWin: Boolean!
 
   # timestamp when bet is placed
   createdAt: BigInt!
@@ -69,7 +104,7 @@ type VaultTransaction @entity {
   vaultAddress: String!
 
   # address of depositer
-  depositerAddress: String!
+  userAddress: String!
 
   # amount of token
   amount: BigInt!
