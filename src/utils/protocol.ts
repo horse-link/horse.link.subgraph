@@ -2,7 +2,7 @@ import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { Protocol } from "../../generated/schema";
 
 function _getPerformanceDifference(a: BigDecimal, b: BigDecimal): BigDecimal {
-  return a.div(b).times(BigDecimal.fromString("100"));
+  return a.times(BigDecimal.fromString("100")).div(b);
 };
 
 function _initialiseProtocol(tvlDelta: BigInt | null = null): Protocol {

@@ -6,7 +6,7 @@ import {
 } from "../generated/Market/Market";
 import { Bet } from "../generated/schema";
 import { getMarketDecimals, isHorseLinkMarket } from "./addresses";
-import { settleBet, createBetEntity } from "./utils/bet";
+import { createBetEntity, getBetId } from "./utils/bet";
 import { amountFromDecimalsToEther } from "./utils/formatting";
 import { changeProtocolInPlay, changeProtocolTvl } from "./utils/protocol";
 import { changeUserInPlay, changeUserPnl } from "./utils/user";
@@ -42,55 +42,55 @@ export function handlePlaced(event: Placed): void {
 
 export function handleSettled(event: Settled): void {
   const address = event.address.toHexString();
-  // check if event comes from horse link market, if not do nothing
   if (isHorseLinkMarket(address) == false) {
     log.info(`${address} is not a horse link market`, []);
     return;
   }
 
-  // assign id to constant so its easier to reference, this corresponds to the original bet's index property
+  // ease of referencing
   const id = event.params.id.toString().toLowerCase();
-
-  // assign result for ease of referencing
   const didWin = event.params.result;
 
-  // the bet is settled so it can be marked as such
-  settleBet(id, didWin, event.block.timestamp, event.transaction.hash);
+  // format id
+  const betId = getBetId(id, address);
 
-  // get the original bet entity so its amount can be referenced
-  const referenceBetEntity = Bet.load(id);
-
-  // if it does not exist exit with an error log
-  if (referenceBetEntity == null) {
-    log.error(`Could not find reference bet entity with id: ${id}`, []);
+  const betEntity = Bet.load(betId);
+  if (betEntity == null) {
+    log.error(`Could not find reference entity with id ${betId}`, []);
+    return;
+  }
+  if (betEntity.settled == true) {
+    log.error(`Bet ${betId} is already settled`, []);
     return;
   }
 
-  // get amount and payout to 18 decimal precision
+  betEntity.settled = true;
+  betEntity.didWin = didWin;
+  betEntity.settledAt = event.block.timestamp;
+  betEntity.settledAtTx = event.transaction.hash.toHexString().toLowerCase();
+
   const decimals = getMarketDecimals(event.address);
-  const amount = amountFromDecimalsToEther(referenceBetEntity.amount, decimals);
   const payout = amountFromDecimalsToEther(event.params.payout, decimals);
 
   // decrease user in play
-  changeUserInPlay(event.params.owner, amount, false, event.block.timestamp);
+  changeUserInPlay(event.params.owner, betEntity.amount, false, event.block.timestamp);
+
+  // decrease in play by amount
+  changeProtocolInPlay(betEntity.amount, false, event.block.timestamp);
 
   // if the user win
   if (didWin == true) {
-    // tvl is decreased by exposure, and in play is decreased by amount
-    const exposure = payout.minus(amount);
-    changeProtocolTvl(exposure, false, event.block.timestamp);
-    changeProtocolInPlay(amount, false, event.block.timestamp);
+    changeProtocolTvl(payout, false, event.block.timestamp);
 
     // increase user pnl by exposure
-    changeUserPnl(event.params.owner, exposure, true, event.block.timestamp);
+    changeUserPnl(event.params.owner, payout.minus(betEntity.amount), true, event.block.timestamp);
+  } else {
+    // if the user lost, tvl is *increased* by original amount
+    changeProtocolTvl(betEntity.amount, true, event.block.timestamp);
 
-    return;
+    // decrease user pnl
+    changeUserPnl(event.params.owner, betEntity.amount, false, event.block.timestamp);
   }
 
-  // if the user lost, in play is *decreased*, and tvl is *increased* by original amount
-  changeProtocolInPlay(amount, false, event.block.timestamp);
-  changeProtocolTvl(amount, true, event.block.timestamp);
-
-  // decrease user pnl
-  changeUserPnl(event.params.owner, referenceBetEntity.amount, false, event.block.timestamp);
+  betEntity.save();
 }
