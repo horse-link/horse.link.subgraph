@@ -79,9 +79,9 @@ dataSources:
     name: Registry
     network: goerli
     source:
-      address: '0xcaCBf4861DF8c39f854e06743a2Be7DCd9883929'
+      address: '0x4a84e406ED2054bA24244dfE8660F055aC00b971'
       abi: Registry
-      startBlock: 7978215
+      startBlock: 8001000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
