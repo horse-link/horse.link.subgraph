@@ -3,12 +3,7 @@ import {
   Approval,
   Deposit,
   OwnershipTransferred,
-  Paused,
-  RoleAdminChanged,
-  RoleGranted,
-  RoleRevoked,
   Transfer,
-  Unpaused,
   Withdraw,
 } from "../generated/Vault/Vault";
 import { getVaultDecimals, isHorseLinkVault } from "./addresses";
@@ -29,29 +24,19 @@ export function handleDeposit(event: Deposit): void {
 
   // get value to 18 decimal precision
   const decimals = getVaultDecimals(event.address);
-  const value = amountFromDecimalsToEther(event.params.value, decimals);
+  const value = amountFromDecimalsToEther(event.params.assets, decimals);
 
   // deposits increase the tvl in the protocol
   changeProtocolTvl(value, true, event.block.timestamp);
   createDeposit(event.params, value, event.transaction, event.block.timestamp, address);
 
   // increase total deposited for user
-  changeUserTotalDepsited(event.params.who, value, true, event.block.timestamp);
+  changeUserTotalDepsited(event.params.sender, value, true, event.block.timestamp);
 }
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
 
-export function handlePaused(event: Paused): void {}
-
-export function handleRoleAdminChanged(event: RoleAdminChanged): void {}
-
-export function handleRoleGranted(event: RoleGranted): void {}
-
-export function handleRoleRevoked(event: RoleRevoked): void {}
-
 export function handleTransfer(event: Transfer): void {}
-
-export function handleUnpaused(event: Unpaused): void {}
 
 export function handleWithdraw(event: Withdraw): void {
   const address = event.address.toHexString();
@@ -63,12 +48,12 @@ export function handleWithdraw(event: Withdraw): void {
 
   // get value to 18 decimal precision
   const decimals = getVaultDecimals(event.address);
-  const value = amountFromDecimalsToEther(event.params.value, decimals);
+  const value = amountFromDecimalsToEther(event.params.assets, decimals);
 
   // withdraws decrease the tvl in the protocol
   changeProtocolTvl(value, false, event.block.timestamp);
   createWithdrawal(event.params, value, event.transaction, event.block.timestamp, address);
 
   // decrease total deposited for user
-  changeUserTotalDepsited(event.params.who, value, false, event.block.timestamp);
+  changeUserTotalDepsited(event.params.sender, value, false, event.block.timestamp);
 }
