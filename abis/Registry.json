@@ -65,7 +65,7 @@
   {
     "inputs": [
       {
-        "internalType": "contract IVault",
+        "internalType": "address",
         "name": "vault",
         "type": "address"
       }
@@ -144,7 +144,7 @@
     "name": "vaults",
     "outputs": [
       {
-        "internalType": "contract IVault",
+        "internalType": "address",
         "name": "",
         "type": "address"
       }

@@ -6,9 +6,10 @@ import {
 } from "../generated/Market/Market";
 import { Bet } from "../generated/schema";
 import { getMarketDecimals, isHorseLinkMarket } from "./addresses";
-import { settleBet, createBetEntity } from "./utils/bet";
+import { createBetEntity, getBetId } from "./utils/bet";
 import { amountFromDecimalsToEther } from "./utils/formatting";
-import { createOrUpdateProtocolEntity } from "./utils/protocol";
+import { changeProtocolInPlay, changeProtocolTvl } from "./utils/protocol";
+import { changeUserInPlay, changeUserPnl } from "./utils/user";
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
 
@@ -32,44 +33,64 @@ export function handlePlaced(event: Placed): void {
   const exposure = newBetEntity.payout.minus(newBetEntity.amount);
 
   // placed bets increase total in play by the bet amount which can come from the new entity, exposure increases tvl
-  createOrUpdateProtocolEntity(event.block.timestamp, true, newBetEntity.amount, exposure);
+  changeProtocolInPlay(amount, true, event.block.timestamp);
+  changeProtocolTvl(exposure, true, event.block.timestamp);
+
+  // increase total in play for user
+  changeUserInPlay(event.params.owner, amount, true, event.block.timestamp);
 }
 
 export function handleSettled(event: Settled): void {
   const address = event.address.toHexString();
-  // check if event comes from horse link market, if not do nothing
   if (isHorseLinkMarket(address) == false) {
     log.info(`${address} is not a horse link market`, []);
     return;
   }
 
-  // assign id to constant so its easier to reference, this corresponds to the original bet's index property
+  // ease of referencing
   const id = event.params.id.toString().toLowerCase();
-
-  // assign result for ease of referencing
   const didWin = event.params.result;
 
-  // the bet is settled so it can be marked as such
-  settleBet(id, didWin, event.block.timestamp, event.transaction.hash);
+  // format id
+  const betId = getBetId(id, address);
 
-  // get the original bet entity so its amount can be referenced
-  const referenceBetEntity = Bet.load(id);
-
-  // if it does not exist exit with an error log
-  if (referenceBetEntity == null) {
-    log.error(`Could not find reference bet entity with id: ${id}`, []);
+  const betEntity = Bet.load(betId);
+  if (betEntity == null) {
+    log.error(`Could not find reference entity with id ${betId}`, []);
     return;
   }
+  if (betEntity.settled == true) {
+    log.error(`Bet ${betId} is already settled`, []);
+    return;
+  }
+
+  betEntity.settled = true;
+  betEntity.didWin = didWin;
+  betEntity.settledAt = event.block.timestamp;
+  betEntity.settledAtTx = event.transaction.hash.toHexString().toLowerCase();
+
+  const decimals = getMarketDecimals(event.address);
+  const payout = amountFromDecimalsToEther(event.params.payout, decimals);
+
+  // decrease user in play
+  changeUserInPlay(event.params.owner, betEntity.amount, false, event.block.timestamp);
+
+  // decrease in play by amount
+  changeProtocolInPlay(betEntity.amount, false, event.block.timestamp);
 
   // if the user win
   if (didWin == true) {
-    // tvl is decreased by exposure, and in play is decreased by amount
-    const exposure = referenceBetEntity.payout.minus(referenceBetEntity.amount);
-    createOrUpdateProtocolEntity(event.block.timestamp, false, referenceBetEntity.amount, exposure);
-    return;
+    changeProtocolTvl(payout, false, event.block.timestamp);
+
+    // increase user pnl by exposure
+    changeUserPnl(event.params.owner, payout.minus(betEntity.amount), true, event.block.timestamp);
+  } else {
+    // if the user lost, tvl is *increased* by original amount
+    changeProtocolTvl(betEntity.amount, true, event.block.timestamp);
+
+    // decrease user pnl
+    changeUserPnl(event.params.owner, betEntity.amount, false, event.block.timestamp);
   }
 
-  // if the user lost, in play is *decreased*, and tvl is *increased* by original amount
-  createOrUpdateProtocolEntity(event.block.timestamp, false, referenceBetEntity.amount, null);
-  createOrUpdateProtocolEntity(event.block.timestamp, true, null, referenceBetEntity.amount);
+  betEntity.save();
 }

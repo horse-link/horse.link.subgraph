@@ -1,4 +1,4 @@
-import { BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { BigInt, ethereum, log } from "@graphprotocol/graph-ts";
 import { VaultTransaction } from "../../generated/schema";
 import { Deposit__Params, Withdraw__Params } from "../../generated/Vault/Vault";
 
@@ -7,18 +7,25 @@ export function createDeposit(params: Deposit__Params, value: BigInt, tx: ethere
   const type = "deposit";
 
   // entity id will be its transaction hash
-  const entity = new VaultTransaction(tx.hash.toHexString().toLowerCase());
+  const id = tx.hash.toHexString().toLowerCase()
+
+  let entity = VaultTransaction.load(id);
+  if (entity !== null) {
+    log.error(`VaultTransaction with id ${id} already exists`, []);
+    return;
+  }
+
+  entity = new VaultTransaction(id);
 
   // populate entity fields
   entity.type = type;
   entity.amount = value;
-  entity.userAddress = params.who.toHexString().toLowerCase();
+  entity.userAddress = params.sender.toHexString().toLowerCase();
 
   // the vaultAddress will be the zero address if a tx.to is not provided
   entity.vaultAddress = eventAddress.toLowerCase();
 
   entity.timestamp = timestamp;
-
   entity.save();
 }
 
@@ -27,17 +34,26 @@ export function createWithdrawal(params: Withdraw__Params, value: BigInt, tx: et
   const type = "withdraw";
 
   // entity id will be its transaction hash
-  const entity = new VaultTransaction(tx.hash.toHexString().toLowerCase());
+  const id = tx.hash.toHexString().toLowerCase()
+
+  let entity = VaultTransaction.load(id);
+  if (entity !== null) {
+    log.error(`VaultTransaction with id ${id} already exists`, []);
+    return;
+  }
+
+  entity = new VaultTransaction(id);
 
   // populate entity fields
   entity.type = type;
   entity.amount = value;
-  entity.userAddress = params.who.toHexString().toLowerCase();
+  entity.userAddress = params.sender.toHexString().toLowerCase();
+
+  log.error(`event amount: ${params.assets.toString()}, converted to ${value.toString}`, []);
 
   // the vaultAddress will be the zero address if a tx.to is not provided
   entity.vaultAddress = eventAddress.toLowerCase();
 
   entity.timestamp = timestamp;
-
   entity.save();
 }

@@ -4,6 +4,10 @@ import { Bet } from "../../generated/schema";
 import { getMarketAssetAddress } from "../addresses";
 import { incrementBets } from "./aggregator";
 
+export function getBetId(id: string, marketAddress: string): string {
+  return `BET_${marketAddress.toLowerCase()}_${id}`;
+}
+
 export function createBetEntity(params: Placed__Params, amount: BigInt, payout: BigInt, timestamp: BigInt, marketAddress: string, hash: Bytes): Bet {
   // check if entity exists already
   let entity = Bet.load(params.index.toString());
@@ -12,7 +16,7 @@ export function createBetEntity(params: Placed__Params, amount: BigInt, payout: 
     // increment bets in aggregator
     incrementBets(timestamp);
     // create the entity with the index param as the id - this will allow it to be fetched from a settled event by its id
-    entity = new Bet(params.index.toString());
+    entity = new Bet(getBetId(params.index.toString(), marketAddress));
   }
 
   // assign bet params
@@ -50,28 +54,4 @@ export function createBetEntity(params: Placed__Params, amount: BigInt, payout: 
 
   // return newly created entity
   return entity;
-};
-
-export function settleBet(id: string, didWin: boolean, timestamp: BigInt, hash: Bytes): void {
-  const entity = Bet.load(id);
-
-  // exit and log an error if the entity could not be found
-  if (entity == null) {
-    log.error(`Could not find bet with id: ${id}`, []);
-    return;
-  }
-
-  // exit and log a warning if the bet has already been settled
-  if (entity.settled == true) {
-    log.warning(`Bet with id: ${id} has already been settled`, []);
-    return;
-  }
-
-  // settle bet with result and store timestamp when its settled as well as tx hash
-  entity.settled = true;
-  entity.didWin = didWin;
-  entity.settledAt = timestamp;
-  entity.settledAtTx = hash.toHexString().toLowerCase();
-
-  entity.save();
 };
