@@ -84,6 +84,20 @@ VaultTransaction @entity {
 }
 ```
 
+### User
+
+An entity that tracks data about a single user (NOTE: `id` will be the user's address)
+
+```graphql
+User @entity {
+  id: ID!
+  totalDeposited: BigInt!
+  inPlay: BigInt!
+  pnl: BigInt!
+  lastUpdate: BigInt!
+}
+```
+
 ## Development
 
 Please note that subgraph code is written in _AssemblyScript_ and NOT Typescript, docs can be found [here](https://www.assemblyscript.org/).
