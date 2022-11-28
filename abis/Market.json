@@ -100,15 +100,15 @@
       },
       {
         "indexed": false,
-        "internalType": "bytes32",
+        "internalType": "bytes16",
         "name": "propositionId",
-        "type": "bytes32"
+        "type": "bytes16"
       },
       {
         "indexed": false,
-        "internalType": "bytes32",
+        "internalType": "bytes16",
         "name": "marketId",
-        "type": "bytes32"
+        "type": "bytes16"
       },
       {
         "indexed": false,
@@ -209,19 +209,19 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "bytes16",
         "name": "nonce",
-        "type": "bytes32"
+        "type": "bytes16"
       },
       {
-        "internalType": "bytes32",
+        "internalType": "bytes16",
         "name": "propositionId",
-        "type": "bytes32"
+        "type": "bytes16"
       },
       {
-        "internalType": "bytes32",
+        "internalType": "bytes16",
         "name": "marketId",
-        "type": "bytes32"
+        "type": "bytes16"
       },
       {
         "internalType": "uint256",
@@ -415,9 +415,9 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "bytes16",
         "name": "marketId",
-        "type": "bytes32"
+        "type": "bytes16"
       }
     ],
     "name": "getMarketTotal",
@@ -444,9 +444,9 @@
         "type": "int256"
       },
       {
-        "internalType": "bytes32",
+        "internalType": "bytes16",
         "name": "propositionId",
-        "type": "bytes32"
+        "type": "bytes16"
       }
     ],
     "name": "getOdds",
@@ -476,9 +476,9 @@
   {
     "inputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "bytes16",
         "name": "propositionId",
-        "type": "bytes32"
+        "type": "bytes16"
       },
       {
         "internalType": "uint256",
