@@ -11,7 +11,7 @@ dataSources:
     network: goerli
     source:
       abi: Vault
-      startBlock: 8001000
+      startBlock: 8034455
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -41,7 +41,7 @@ dataSources:
     network: goerli
     source:
       abi: Market
-      startBlock: 8001000
+      startBlock: 8034455
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -58,7 +58,7 @@ dataSources:
       eventHandlers:
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
-        - event: Placed(uint256,bytes32,bytes32,uint256,uint256,indexed address)
+        - event: Placed(uint256,bytes16,bytes16,uint256,uint256,indexed address)
           handler: handlePlaced
         - event: Settled(uint256,uint256,bool,indexed address)
           handler: handleSettled
@@ -69,9 +69,9 @@ dataSources:
     name: Registry
     network: goerli
     source:
-      address: '0x4a84e406ED2054bA24244dfE8660F055aC00b971'
+      address: '0x2bc44D5b0cF734D24e0FC17509004f483D4B1362'
       abi: Registry
-      startBlock: 8001000
+      startBlock: 8034455
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
