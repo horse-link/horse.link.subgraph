@@ -71,6 +71,9 @@ type Bet @entity {
   # amount of token as potential payout
   payout: BigInt!
 
+  # payout timestamp
+  payoutAt: BigInt!
+
   # address of the bet owner
   owner: String!
 
