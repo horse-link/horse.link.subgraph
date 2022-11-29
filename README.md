@@ -59,6 +59,7 @@ Bet @entity {
   assetAddress: String!
   amount: BigInt!
   payout: BigInt!
+  payoutAt: BigInt!
   owner: String!
   settled: Boolean!
   didWin: Boolean!

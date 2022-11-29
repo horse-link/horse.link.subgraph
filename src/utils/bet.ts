@@ -1,5 +1,5 @@
 import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
-import { Placed__Params } from "../../generated/Market/Market";
+import { Market, Placed__Params } from "../../generated/Market/Market";
 import { Bet } from "../../generated/schema";
 import { getMarketAssetAddress } from "../addresses";
 import { incrementBets } from "./aggregator";
@@ -26,6 +26,12 @@ export function createBetEntity(params: Placed__Params, amount: BigInt, payout: 
   // amount and payout are formatted to 18 decimals
   entity.amount = amount;
   entity.payout = payout;
+
+  // get payout date
+  const marketContract = Market.bind(Address.fromString(marketAddress));
+  const struct = marketContract.getBetByIndex(params.index);
+  const payoutDate = struct.getValue2();
+  entity.payoutAt = payoutDate;
 
   // toHexString is best for formatting addresses to strings
   entity.owner = params.owner.toHexString().toLowerCase();
