@@ -5,6 +5,11 @@
         "internalType": "contract IERC20Metadata",
         "name": "asset_",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lockDuration_",
+        "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
@@ -390,6 +395,38 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "lockDuration",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "lockedTime",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -680,6 +717,19 @@
   {
     "inputs": [],
     "name": "totalAssets",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalAssetsLocked",
     "outputs": [
       {
         "internalType": "uint256",
