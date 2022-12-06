@@ -11,7 +11,7 @@ dataSources:
     network: goerli
     source:
       abi: Vault
-      startBlock: 8083406
+      startBlock: 8083493
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -41,7 +41,7 @@ dataSources:
     network: goerli
     source:
       abi: Market
-      startBlock: 8083406
+      startBlock: 8083493
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -69,9 +69,9 @@ dataSources:
     name: Registry
     network: goerli
     source:
-      address: '0x725c1cdfa8c76F6C4CaBbb09008719ECC0D9De50'
+      address: '0xd35157aF03D25cE796568CD7FAd1491BD98595C8'
       abi: Registry
-      startBlock: 8083406
+      startBlock: 8083493
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
