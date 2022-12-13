@@ -457,6 +457,11 @@
         "internalType": "bytes16",
         "name": "propositionId",
         "type": "bytes16"
+      },
+      {
+        "internalType": "bytes16",
+        "name": "marketId",
+        "type": "bytes16"
       }
     ],
     "name": "getOdds",
@@ -491,6 +496,11 @@
         "type": "bytes16"
       },
       {
+        "internalType": "bytes16",
+        "name": "marketId",
+        "type": "bytes16"
+      },
+      {
         "internalType": "uint256",
         "name": "wager",
         "type": "uint256"
@@ -502,6 +512,25 @@
       }
     ],
     "name": "getPotentialPayout",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes16",
+        "name": "marketId",
+        "type": "bytes16"
+      }
+    ],
+    "name": "getRiskCoefficient",
     "outputs": [
       {
         "internalType": "uint256",
@@ -750,6 +779,24 @@
       }
     ],
     "name": "setApprovalForAll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes16",
+        "name": "marketId",
+        "type": "bytes16"
+      },
+      {
+        "internalType": "uint256",
+        "name": "risk",
+        "type": "uint256"
+      }
+    ],
+    "name": "setRiskCoefficient",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
