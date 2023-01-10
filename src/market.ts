@@ -48,7 +48,7 @@ export function handleSettled(event: Settled): void {
   }
 
   // ease of referencing
-  const id = event.params.id.toString().toLowerCase();
+  const id = event.params.index.toString().toLowerCase();
   const didWin = event.params.result;
 
   // format id
@@ -73,7 +73,7 @@ export function handleSettled(event: Settled): void {
   const payout = amountFromDecimalsToEther(event.params.payout, decimals);
 
   // decrease user in play
-  changeUserInPlay(event.params.owner, betEntity.amount, false, event.block.timestamp);
+  changeUserInPlay(event.params.recipient, betEntity.amount, false, event.block.timestamp);
 
   // decrease in play by amount
   changeProtocolInPlay(betEntity.amount, false, event.block.timestamp);
@@ -83,13 +83,13 @@ export function handleSettled(event: Settled): void {
     changeProtocolTvl(payout, false, event.block.timestamp);
 
     // increase user pnl by exposure
-    changeUserPnl(event.params.owner, payout.minus(betEntity.amount), true, event.block.timestamp);
+    changeUserPnl(event.params.recipient, payout.minus(betEntity.amount), true, event.block.timestamp);
   } else {
     // if the user lost, tvl is *increased* by original amount
     changeProtocolTvl(betEntity.amount, true, event.block.timestamp);
 
     // decrease user pnl
-    changeUserPnl(event.params.owner, betEntity.amount, false, event.block.timestamp);
+    changeUserPnl(event.params.recipient, betEntity.amount, false, event.block.timestamp);
   }
 
   betEntity.save();
