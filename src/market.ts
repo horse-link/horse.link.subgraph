@@ -3,6 +3,7 @@ import {
   OwnershipTransferred,
   Placed,
   Settled,
+  Transfer
 } from "../generated/Market/Market";
 import { Bet } from "../generated/schema";
 import { getMarketDecimals, isHorseLinkMarket } from "./addresses";
@@ -12,6 +13,30 @@ import { changeProtocolInPlay, changeProtocolTvl } from "./utils/protocol";
 import { changeUserInPlay, changeUserPnl } from "./utils/user";
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
+
+export function handleTransfered(event: Transfer): void {
+  const address = event.address.toHexString();
+  // check if event comes from horse link market, if not do nothing
+  if (isHorseLinkMarket(address) == false) {
+    log.info(`${address} is not a horse link market`, []);
+    return;
+  }
+
+  // ease of referencing
+  const id = event.params.tokenId.toString().toLowerCase();
+
+  // format id
+  const betId = getBetId(id, address);
+
+  const betEntity = Bet.load(betId);
+  if (betEntity == null) {
+    log.error(`Could not find reference entity with id ${betId}`, []);
+    return;
+  }
+
+  betEntity.owner = event.params.to.toHexString();
+  betEntity.save();
+}
 
 export function handlePlaced(event: Placed): void {
   const address = event.address.toHexString();
