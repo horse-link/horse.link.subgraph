@@ -22,19 +22,20 @@ export function handleTransfered(event: Transfer): void {
     return;
   }
 
-    // ease of referencing
-    const id = event.params.tokenId.toString().toLowerCase();
+  // ease of referencing
+  const id = event.params.tokenId.toString().toLowerCase();
 
-    // format id
-    const betId = getBetId(id, address);
+  // format id
+  const betId = getBetId(id, address);
 
-    const betEntity = Bet.load(betId);
-    if (betEntity == null) {
-      log.error(`Could not find reference entity with id ${betId}`, []);
-      return;
-    }
+  const betEntity = Bet.load(betId);
+  if (betEntity == null) {
+    log.error(`Could not find reference entity with id ${betId}`, []);
+    return;
+  }
 
-    betEntity.owner = event.params.to.toHexString();
+  betEntity.owner = event.params.to.toHexString();
+  betEntity.save();
 }
 
 export function handlePlaced(event: Placed): void {
