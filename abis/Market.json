@@ -8,7 +8,7 @@
       },
       {
         "internalType": "uint8",
-        "name": "margin",
+        "name": "fee",
         "type": "uint8"
       },
       {
@@ -369,11 +369,6 @@
         "type": "bool"
       },
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
         "internalType": "bytes16",
         "name": "",
         "type": "bytes16"
@@ -440,6 +435,25 @@
         "internalType": "uint8",
         "name": "",
         "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes16",
+        "name": "marketId",
+        "type": "bytes16"
+      }
+    ],
+    "name": "getMarketCollateral",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -683,6 +697,13 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "refundCollateral",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
