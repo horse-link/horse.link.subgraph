@@ -41,6 +41,9 @@ export function handlePlaced(event: Placed): void {
 }
 
 export function handleSettled(event: Settled): void {
+  const WINNER = 0x01;
+  const LOSER = 0x02;
+	const SCRATCHED = 0x03;
   const address = event.address.toHexString();
   if (isHorseLinkMarket(address) == false) {
     log.info(`${address} is not a horse link market`, []);
@@ -49,7 +52,6 @@ export function handleSettled(event: Settled): void {
 
   // ease of referencing
   const id = event.params.index.toString().toLowerCase();
-  const didWin = event.params.result;
 
   // format id
   const betId = getBetId(id, address);
@@ -65,7 +67,7 @@ export function handleSettled(event: Settled): void {
   }
 
   betEntity.settled = true;
-  betEntity.didWin = didWin;
+  betEntity.didWin = event.params.result == WINNER;
   betEntity.settledAt = event.block.timestamp;
   betEntity.settledAtTx = event.transaction.hash.toHexString().toLowerCase();
 
@@ -79,17 +81,23 @@ export function handleSettled(event: Settled): void {
   changeProtocolInPlay(betEntity.amount, false, event.block.timestamp);
 
   // if the user win
-  if (didWin == true) {
+  if (event.params.result == WINNER) {
     changeProtocolTvl(payout, false, event.block.timestamp);
 
     // increase user pnl by exposure
     changeUserPnl(event.params.recipient, payout.minus(betEntity.amount), true, event.block.timestamp);
-  } else {
+  } else if (event.params.result == LOSER) {
     // if the user lost, tvl is *increased* by original amount
     changeProtocolTvl(betEntity.amount, true, event.block.timestamp);
 
     // decrease user pnl
     changeUserPnl(event.params.recipient, betEntity.amount, false, event.block.timestamp);
+  } else if (event.params.result == SCRATCHED) {
+    const lay = payout.minus(betEntity.amount);
+    changeProtocolTvl(lay, false, event.block.timestamp);
+
+    // increase user pnl by exposure
+    changeUserPnl(event.params.recipient, lay, true, event.block.timestamp);
   }
 
   betEntity.save();

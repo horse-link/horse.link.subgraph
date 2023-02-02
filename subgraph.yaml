@@ -60,7 +60,7 @@ dataSources:
           handler: handleOwnershipTransferred
         - event: Placed(uint256,bytes16,bytes16,uint256,uint256,indexed address)
           handler: handlePlaced
-        - event: Settled(uint256,uint256,bool,indexed address)
+        - event: Settled(uint256,uint256,uint8,indexed address)
           handler: handleSettled
       file: ./src/market.ts
 
