@@ -23,6 +23,16 @@ export function isHorseLinkVault(address: string): bool {
   return vaults.map<string>(_makeLowerCase).includes(address.toLowerCase());
 }
 
+export function isHorseLinkToken(address: string): bool {
+  const registry = Registry.load("registry");
+  if (registry == null) return false;
+
+  const vaultContracts = registry.vaults.map<Vault>(vault => Vault.bind(Address.fromString(vault)));
+  const tokenAddresses = vaultContracts.map<Address>(vault => vault.asset());
+
+  return tokenAddresses.map<string>(address => address.toHexString()).map<string>(_makeLowerCase).includes(address.toLowerCase());
+}
+
 export function getVaultDecimals(vaultAddress: Address): number {
   const vaultContract = Vault.bind(vaultAddress);
   return vaultContract.decimals();

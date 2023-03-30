@@ -132,3 +132,20 @@ type User @entity {
   # when user entity was last updated
   lastUpdate: BigInt!
 }
+
+type Transfer @entity {
+  # id will be tx hash
+  id: ID!
+
+  # address of {to}
+  to: String!
+
+  # address of {from}
+  from: String!
+
+  # amount
+  amount: BigInt!
+
+  # timestamp of tx
+  timestamp: BigInt!
+}

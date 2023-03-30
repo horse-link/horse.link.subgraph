@@ -5,13 +5,38 @@ schema:
   file: ./schema.graphql
 
 dataSources:
+  # TOKENS (perf killer)
+  - kind: ethereum/contract
+    name: Token
+    network: goerli
+    source:
+      abi: ERC20
+      startBlock: 8651281
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Registry
+        - Vault
+        - Token
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: Vault
+          file: ./abis/Vault.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/erc20.ts
+
   # VAULTS
   - kind: ethereum/contract
     name: Vault
     network: goerli
     source:
       abi: Vault
-      startBlock: 8651282
+      startBlock: 8651281
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -41,7 +66,7 @@ dataSources:
     network: goerli
     source:
       abi: Market
-      startBlock: 8651282
+      startBlock: 8651281
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -71,7 +96,7 @@ dataSources:
     source:
       address: '0xcDC42831cbF7479D84297F9001fEB59b7eAfFFb6'
       abi: Registry
-      startBlock: 8651282
+      startBlock: 8651281
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
