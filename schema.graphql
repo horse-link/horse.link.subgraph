@@ -94,6 +94,8 @@ type Bet @entity {
 
   # tx for settledAt
   settledAtTx: String!
+
+  refunded: Boolean!
 }
 
 type VaultTransaction @entity {

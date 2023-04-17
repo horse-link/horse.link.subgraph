@@ -32,7 +32,7 @@ dataSources:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
         - event: Withdraw(indexed address,indexed address,indexed address,uint256,uint256)
-          handler: handleWithdraw 
+          handler: handleWithdraw
       file: ./src/vault.ts
 
   # MARKETS
@@ -62,6 +62,8 @@ dataSources:
           handler: handlePlaced
         - event: Settled(uint256,uint256,uint8,indexed address)
           handler: handleSettled
+        - event: Refunded(uint256,uint256)
+          handler: handleRefunded
       file: ./src/market.ts
 
   # REGISTRY
@@ -69,7 +71,7 @@ dataSources:
     name: Registry
     network: goerli
     source:
-      address: '0xcDC42831cbF7479D84297F9001fEB59b7eAfFFb6'
+      address: "0xcDC42831cbF7479D84297F9001fEB59b7eAfFFb6"
       abi: Registry
       startBlock: 8651282
     mapping:
